@@ -9,6 +9,27 @@
         justify-content: center;
     }
 
+    /* --- NEW HOVER EFFECTS FOR CLICKABLE AREA --- */
+    #uploadPlaceholder {
+        cursor: pointer;
+        padding: 20px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    #uploadPlaceholder:hover {
+        background-color: rgba(26, 24, 81, 0.05);
+    }
+
+    [data-bs-theme="dark"] #uploadPlaceholder:hover {
+        background-color: rgba(130, 170, 255, 0.1);
+    }
+
+    #uploadPlaceholder:hover .upload-icon-wrapper {
+        transform: scale(1.05);
+    }
+    /* ------------------------------------------- */
+
     .upload-icon-wrapper {
         width: 80px;
         height: 80px;
@@ -18,6 +39,7 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 20px;
+        transition: transform 0.2s ease;
     }
 
     .upload-icon-wrapper i {
@@ -35,6 +57,12 @@
         display: none;
         margin-bottom: 20px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer; /* Lets user know they can click to change */
+        transition: opacity 0.2s ease;
+    }
+    
+    .preview-img:hover {
+        opacity: 0.8;
     }
 
     .form-label {
@@ -57,9 +85,9 @@
     <div class="row g-4">
         <div class="col-lg-5">
             <div class="photo-upload-card text-center shadow-sm">
-                <img id="photoPreview" class="preview-img" src="" alt="Student Preview">
+                <img id="photoPreview" class="preview-img" src="" alt="Student Preview" title="Click to change photo" onclick="document.getElementById('studentPhotoInput').click()">
 
-                <div id="uploadPlaceholder">
+                <div id="uploadPlaceholder" onclick="document.getElementById('studentPhotoInput').click()">
                     <div class="upload-icon-wrapper mx-auto">
                         <i class="bi bi-cloud-arrow-up-fill"></i>
                     </div>
@@ -68,11 +96,8 @@
                 </div>
 
                 <input type="file" id="studentPhotoInput" accept="image/png, image/jpeg" style="display: none;" onchange="previewSelectedPhoto(event)">
-
-                <button class="btn-upload-left" onclick="document.getElementById('studentPhotoInput').click()">
-                    Select Image <i class="bi bi-image ms-2"></i>
-                </button>
-            </div>
+                
+                </div>
         </div>
 
         <div class="col-lg-7">
@@ -147,7 +172,7 @@
             const previewImg = document.getElementById('photoPreview');
             previewImg.src = URL.createObjectURL(file);
             previewImg.style.display = 'block';
-            event.target.nextElementSibling.innerHTML = 'Change Photo <i class="bi bi-arrow-repeat ms-2"></i>';
+            // Button is gone, so we don't try to change its text anymore!
         }
     }
 
@@ -219,7 +244,6 @@
                             location.reload();
                         });
                 } else {
-                    // If it crashes, the try/catch in PHP will tell us EXACTLY what broke right here!
                     Swal.fire('Error', data.message, 'error');
                 }
             })

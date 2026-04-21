@@ -2,6 +2,18 @@
 include_once("../../app/middleware/user.php");
 // Ensure Database connection is available for the user side
 include_once("../../app/config/config.php");
+
+// --- MAINTENANCE MODE CHECK ---
+$maintQuery = "SELECT setting_value FROM `system_settings` WHERE setting_key = 'maintenance_mode' ORDER BY id DESC LIMIT 1";
+$maintRes = $conn->query($maintQuery);
+if ($maintRes && $maintRes->num_rows > 0) {
+    $maintRow = $maintRes->fetch_assoc();
+    // If maintenance is ON, kick the standard user to the maintenance screen
+    if ($maintRow['setting_value'] === '1') {
+        header("Location: ../maintenance.php");
+        exit();
+    }
+}
 ?>
 
 <!DOCTYPE html>

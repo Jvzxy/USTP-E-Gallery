@@ -4,7 +4,6 @@ $allDepartments = [];
 $allPrograms = [];
 $sysSettings = [
     'system_name' => 'USTP E-Gallery',
-    'default_class_year' => '2029',
     'maintenance_mode' => '0'
 ];
 
@@ -25,7 +24,7 @@ if (isset($conn)) {
         }
     }
 
-    // NEW: Fetch Class Years
+    // Fetch Class Years (Kept for Data Management and Export tabs)
     $yearRes = $conn->query("SELECT * FROM class_years ORDER BY year DESC");
     if ($yearRes && $yearRes->num_rows > 0) {
         while ($row = $yearRes->fetch_assoc()) {
@@ -33,11 +32,24 @@ if (isset($conn)) {
         }
     }
 
-    // NEW: Fetch Global Settings!
+    // Fetch Global Settings
     $setRes = $conn->query("SELECT setting_key, setting_value FROM system_settings");
     if ($setRes && $setRes->num_rows > 0) {
         while ($row = $setRes->fetch_assoc()) {
             $sysSettings[$row['setting_key']] = $row['setting_value'];
+        }
+    }
+
+    // --- NEW: FETCH LOGGED IN ADMIN PROFILE ---
+    $adminProfile = [
+        'username' => '',
+        'recovery_email' => '',
+        'two_factor_enabled' => 0
+    ];
+    if (isset($_SESSION['user_id'])) {
+        $profileRes = $conn->query("SELECT username, recovery_email, two_factor_enabled FROM user WHERE id = " . $_SESSION['user_id']);
+        if ($profileRes && $profileRes->num_rows > 0) {
+            $adminProfile = $profileRes->fetch_assoc();
         }
     }
 }
@@ -48,7 +60,7 @@ if (isset($conn)) {
         border-radius: 12px;
         height: 650px;
         min-height: 650px;
-        overflow: hidden;
+        overflow: hidden
     }
 
     #settingsModal .settings-sidebar {
@@ -56,69 +68,69 @@ if (isset($conn)) {
         flex-shrink: 0;
         background-color: var(--bs-body-bg);
         border-right: 2px solid var(--bs-border-color);
-        padding: 30px 20px;
+        padding: 30px 20px
     }
 
     #settingsModal .settings-main {
         background-color: var(--bs-body-bg);
         padding: 40px;
         position: relative;
-        overflow-y: auto;
+        overflow-y: auto
     }
 
     #settingsModal .settings-nav .nav-link {
         color: var(--bs-body-color);
         font-weight: 800;
-        font-size: 0.85rem;
+        font-size: .85rem;
         border-radius: 8px;
         margin-bottom: 5px;
         padding: 12px 15px;
         text-align: left;
-        transition: all 0.2s;
+        transition: all .2s
     }
 
     #settingsModal .settings-nav .nav-link.active {
-        background-color: rgba(26, 24, 81, 0.1);
-        color: #1A1851;
+        background-color: rgba(26, 24, 81, .1);
+        color: #1A1851
     }
 
     #settingsModal .settings-nav .nav-link:hover:not(.active) {
         background-color: var(--bs-secondary-bg);
-        color: inherit;
+        color: inherit
     }
 
     #settingsModal .settings-nav .nav-link i {
         font-size: 1.1rem;
         width: 24px;
-        display: inline-block;
+        display: inline-block
     }
 
     #settingsModal .btn-navy {
         background-color: #1A1851 !important;
-        color: white !important;
+        color: #fff !important;
         font-weight: 800;
         border: none;
         border-radius: 6px;
         padding: 8px 24px;
-        transition: 0.2s;
+        transition: .2s
     }
 
     #settingsModal .btn-navy:hover {
         background-color: #2a2775 !important;
-        color: white !important;
-        opacity: 1 !important;
+        color: #fff !important;
+        opacity: 1 !important
     }
 
     #settingsModal .form-switch.settings-switch .form-check-input {
         width: 3em;
         height: 1.5em;
-        cursor: pointer;
+        cursor: pointer
     }
 
     #settingsModal .settings-switch .form-check-label {
         padding-top: 4px;
         font-weight: 700;
-        cursor: pointer;
+        cursor: pointer
     }
 
     #settingsModal .theme-list-group .list-group-item {
@@ -128,13 +140,13 @@ if (isset($conn)) {
         border-radius: 8px !important;
         margin-bottom: 5px;
         padding: 12px 20px;
-        transition: 0.2s;
+        transition: .2s
     }
 
     #settingsModal .theme-list-group .list-group-item.active-theme {
-        background-color: rgba(26, 24, 81, 0.1);
+        background-color: rgba(26, 24, 81, .1);
         color: #1A1851;
-        font-weight: 800;
+        font-weight: 800
     }
 
     #settingsModal .theme-apply-container {
@@ -142,28 +154,27 @@ if (isset($conn)) {
         border: 1px solid var(--bs-border-color);
         border-radius: 12px;
         padding: 20px;
-        margin-top: 30px;
+        margin-top: 30px
     }
 
-    /* Custom Input Modal Styling */
     .custom-input-modal .modal-content {
         border-radius: 10px !important;
         padding: 35px;
         border: 1px solid var(--bs-border-color);
         background-color: var(--bs-body-bg);
-        color: var(--bs-body-color);
+        color: var(--bs-body-color)
     }
 
     .custom-input-modal h4 {
         font-weight: 900;
         margin-bottom: 25px;
-        font-size: 1.5rem;
+        font-size: 1.5rem
     }
 
     .custom-input-modal .form-label {
         font-weight: 800;
-        font-size: 0.95rem;
-        color: var(--bs-body-color);
+        font-size: .95rem;
+        color: var(--bs-body-color)
     }
 
     .custom-input-modal .form-control,
@@ -172,92 +183,91 @@ if (isset($conn)) {
         background-color: var(--bs-body-bg);
         color: var(--bs-body-color);
         border: 2px solid #e2e8f0;
-        padding: 12px 15px;
+        padding: 12px 15px
     }
 
     .custom-input-modal .form-control:focus,
     .custom-input-modal .form-select:focus {
         border-color: #1A1851;
-        box-shadow: none;
+        box-shadow: none
     }
 
     .btn-outline-navy {
         border: 2px solid #1A1851;
         color: #1A1851;
-        background: transparent;
+        background: 0 0;
         border-radius: 4px;
         font-weight: 800;
-        transition: 0.2s;
+        transition: .2s
     }
 
     .btn-outline-navy:hover {
-        background-color: rgba(26, 24, 81, 0.05);
-        color: #1A1851;
+        background-color: rgba(26, 24, 81, .05);
+        color: #1A1851
     }
 
     .custom-input-modal .btn-navy {
-        border-radius: 4px;
+        border-radius: 4px
     }
 
-    /* --- DARK MODE --- */
-    [data-bs-theme="dark"] #settingsModal .modal-content,
-    [data-bs-theme="dark"] #settingsModal .settings-sidebar,
-    [data-bs-theme="dark"] #settingsModal .settings-main {
+    [data-bs-theme=dark] #settingsModal .modal-content,
+    [data-bs-theme=dark] #settingsModal .settings-main,
+    [data-bs-theme=dark] #settingsModal .settings-sidebar {
         background-color: #1e1e1e !important;
         border-color: #333 !important;
-        color: #e0e0e0 !important;
+        color: #e0e0e0 !important
     }
 
-    [data-bs-theme="dark"] #settingsModal .settings-nav .nav-link.active {
-        background-color: rgba(130, 170, 255, 0.1);
-        color: #82aaff;
+    [data-bs-theme=dark] #settingsModal .settings-nav .nav-link.active {
+        background-color: rgba(130, 170, 255, .1);
+        color: #82aaff
     }
 
-    [data-bs-theme="dark"] #settingsModal .settings-nav .nav-link:hover:not(.active) {
-        color: #fff !important;
+    [data-bs-theme=dark] #settingsModal .settings-nav .nav-link:hover:not(.active) {
+        color: #fff !important
     }
 
-    [data-bs-theme="dark"] #settingsModal .btn-navy {
+    [data-bs-theme=dark] #settingsModal .btn-navy {
         background-color: #82aaff !important;
-        color: #121212 !important;
+        color: #121212 !important
     }
 
-    [data-bs-theme="dark"] #settingsModal .btn-navy:hover {
+    [data-bs-theme=dark] #settingsModal .btn-navy:hover {
         background-color: #a0c2ff !important;
         color: #121212 !important;
-        opacity: 1 !important;
+        opacity: 1 !important
     }
 
-    [data-bs-theme="dark"] #settingsModal .theme-list-group .list-group-item.active-theme {
-        background-color: rgba(130, 170, 255, 0.1);
-        color: #82aaff;
+    [data-bs-theme=dark] #settingsModal .theme-list-group .list-group-item.active-theme {
+        background-color: rgba(130, 170, 255, .1);
+        color: #82aaff
     }
 
-    [data-bs-theme="dark"] .custom-input-modal .modal-content {
+    [data-bs-theme=dark] .custom-input-modal .modal-content {
         background-color: #1e1e1e !important;
-        border-color: #333 !important;
+        border-color: #333 !important
     }
 
-    [data-bs-theme="dark"] .custom-input-modal .form-control,
-    [data-bs-theme="dark"] .custom-input-modal .form-select {
+    [data-bs-theme=dark] .custom-input-modal .form-control,
+    [data-bs-theme=dark] .custom-input-modal .form-select {
         background-color: #2c2c2c !important;
-        color: white !important;
-        border-color: #555 !important;
+        color: #fff !important;
+        border-color: #555 !important
     }
 
-    [data-bs-theme="dark"] .custom-input-modal .form-control:focus,
-    [data-bs-theme="dark"] .custom-input-modal .form-select:focus {
-        border-color: #82aaff !important;
+    [data-bs-theme=dark] .custom-input-modal .form-control:focus,
+    [data-bs-theme=dark] .custom-input-modal .form-select:focus {
+        border-color: #82aaff !important
     }
 
-    [data-bs-theme="dark"] .btn-outline-navy {
+    [data-bs-theme=dark] .btn-outline-navy {
         border-color: #82aaff;
-        color: #82aaff;
+        color: #82aaff
     }
 
-    [data-bs-theme="dark"] .btn-outline-navy:hover {
-        background-color: rgba(130, 170, 255, 0.1);
-        color: #82aaff;
+    [data-bs-theme=dark] .btn-outline-navy:hover {
+        background-color: rgba(130, 170, 255, .1);
+        color: #82aaff
     }
 </style>
 
@@ -290,28 +300,28 @@ if (isset($conn)) {
                             <div class="row g-4 max-w-75">
                                 <div class="col-md-6">
                                     <label class="form-label">Admin Username</label>
-                                    <input type="text" class="form-control" value="admin1">
+                                    <input type="text" class="form-control" id="profileUsername" value="<?php echo htmlspecialchars($adminProfile['username']); ?>">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Recovery Email</label>
-                                    <input type="email" class="form-control" placeholder="admin@ustp.edu.ph">
+                                    <input type="email" class="form-control" id="profileEmail" placeholder="admin@ustp.edu.ph" value="<?php echo htmlspecialchars($adminProfile['recovery_email'] ?? ''); ?>">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">New Password</label>
-                                    <input type="password" class="form-control" placeholder="••••••••">
+                                    <input type="password" class="form-control" id="profilePassword" placeholder="Leave blank to keep current">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" placeholder="••••••••">
+                                    <input type="password" class="form-control" id="profileConfirmPassword" placeholder="••••••••">
                                 </div>
                                 <div class="col-12 mt-4">
                                     <div class="form-check form-switch settings-switch d-flex align-items-center gap-3">
-                                        <input class="form-check-input m-0" type="checkbox" id="twoFactorSwitch">
+                                        <input class="form-check-input m-0" type="checkbox" id="twoFactorSwitch" <?php echo ($adminProfile['two_factor_enabled'] == 1) ? 'checked' : ''; ?>>
                                         <label class="form-check-label m-0" for="twoFactorSwitch">Enable Two-Factor Authentication (2FA)</label>
                                     </div>
                                 </div>
                                 <div class="col-12 mt-4">
-                                    <button class="btn btn-navy fw-bold">Save Profile</button>
+                                    <button class="btn btn-navy fw-bold" onclick="saveProfileSettings()">Save Profile</button>
                                 </div>
                             </div>
                         </div>
@@ -408,18 +418,6 @@ if (isset($conn)) {
                                     <input type="text" class="form-control" id="systemNameInput" value="<?php echo htmlspecialchars($sysSettings['system_name']); ?>">
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="form-label">Default Class Year</label>
-                                    <select class="form-select" name="class_year" id="classYearSelect">
-                                        <?php foreach ($allYears as $y): ?>
-                                            <option value="<?php echo htmlspecialchars($y['year']); ?>" <?php echo ($defaultYear == $y['year']) ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($y['year']); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <small class="text-muted">Auto-fills the upload form to save time.</small>
-                                </div>
-
                                 <div class="col-12 mt-5 p-4 border rounded-3 bg-body-secondary">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -440,10 +438,10 @@ if (isset($conn)) {
                         <div class="tab-pane fade" id="tab-data">
                             <h4 class="fw-bold mb-4">Data Management</h4>
                             <p class="text-muted mb-4">Manage the standard lists used in the upload forms.</p>
-                            
+
                             <div class="row g-4 align-items-start">
                                 <div class="col-md-6 d-flex flex-column gap-4">
-                                    
+
                                     <div class="card border-0 shadow-sm">
                                         <div class="card-body">
                                             <h6 class="fw-bold mb-3 d-flex justify-content-between">Departments <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="openStackedModal('addDeptModal')">+</button></h6>
@@ -524,7 +522,7 @@ if (isset($conn)) {
                                         <i class="bi bi-database-down fs-1 text-primary mb-2 d-block"></i>
                                         <h6 class="fw-bold">Database Backup</h6>
                                         <p class="text-muted small mb-3">Create a safe copy of the MySQL database.</p>
-                                        <button class="btn btn-outline-primary fw-bold px-4">Generate SQL</button>
+                                        <button class="btn btn-outline-primary fw-bold px-4" onclick="downloadDatabaseBackup()">Generate SQL</button>
                                     </div>
                                 </div>
                             </div>
@@ -544,9 +542,11 @@ if (isset($conn)) {
                                             <label class="form-label small fw-bold">Select Class Year</label>
                                             <select class="form-select form-select-sm shadow-sm" id="exportClassYear">
                                                 <option value="all" selected>All Years</option>
-                                                <option value="2028">2028</option>
-                                                <option value="2029">2029</option>
-                                                <option value="2030">2030</option>
+                                                <?php if (!empty($allYears)): ?>
+                                                    <?php foreach ($allYears as $y): ?>
+                                                        <option value="<?php echo htmlspecialchars($y['year']); ?>"><?php echo htmlspecialchars($y['year']); ?></option>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </select>
                                         </div>
 
@@ -633,7 +633,6 @@ if (isset($conn)) {
     </div>
 </div>
 
-
 <script>
     // --- SETTINGS REOPEN LOGIC ---
     document.addEventListener("DOMContentLoaded", function() {
@@ -653,15 +652,13 @@ if (isset($conn)) {
         }
     });
 
-    // --- NEW: DATABASE SETTINGS AJAX LOGIC ---
+    // --- DATABASE SETTINGS AJAX LOGIC ---
     function saveGeneralSettings() {
         const sysName = document.getElementById('systemNameInput').value.trim();
-        const defaultYear = document.getElementById('defaultClassYearSelect').value;
         const maintenance = document.getElementById('maintenanceSwitch').checked ? '1' : '0';
 
         let formData = new FormData();
         formData.append('system_name', sysName);
-        formData.append('default_class_year', defaultYear);
         formData.append('maintenance_mode', maintenance);
 
         fetch('../../app/controllers/updateSettingsController.php', {
@@ -679,7 +676,7 @@ if (isset($conn)) {
                             timer: 1500
                         })
                         .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'general'); // Reopen to General Tab
+                            sessionStorage.setItem('reopenSettings', 'general');
                             location.reload();
                         });
                 } else {
@@ -718,19 +715,34 @@ if (isset($conn)) {
         });
     }
 
+    // --- NEW: FUNCTIONAL EXPORT CSV BUTTON ---
     function exportStudentData() {
         const selectedYear = document.getElementById('exportClassYear').value;
-        const exportMessage = selectedYear === 'all' ?
-            'Downloading all student records...' :
-            `Downloading records for Class of ${selectedYear}...`;
 
         Swal.fire({
+            icon: 'success',
+            title: 'Export Started',
+            text: 'Your CSV file is downloading...',
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        // Instantly redirect the browser to the PHP script to trigger the download
+        window.location.href = `../../app/controllers/exportCsvController.php?year=${selectedYear}`;
+    }
+
+    // --- NEW: FUNCTIONAL DATABASE BACKUP BUTTON ---
+    function downloadDatabaseBackup() {
+        Swal.fire({
             icon: 'info',
-            title: 'Exporting Data',
-            text: exportMessage,
+            title: 'Generating Backup',
+            text: 'Bundling your database into an SQL file...',
             showConfirmButton: false,
             timer: 2000
         });
+
+        // Instantly redirect the browser to the PHP script to trigger the .sql download
+        window.location.href = '../../app/controllers/backupDatabaseController.php';
     }
 
     // --- CUSTOM STACKED MODAL CONTROLLERS ---
@@ -783,7 +795,7 @@ if (isset($conn)) {
                             timer: 1500
                         })
                         .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'data'); // Reopen to Data Tab
+                            sessionStorage.setItem('reopenSettings', 'data');
                             location.reload();
                         });
                 } else {
@@ -824,7 +836,7 @@ if (isset($conn)) {
                             timer: 1500
                         })
                         .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'data'); // Reopen to Data Tab
+                            sessionStorage.setItem('reopenSettings', 'data');
                             location.reload();
                         });
                 } else {
@@ -893,7 +905,7 @@ if (isset($conn)) {
                     .then(r => r.json())
                     .then(response => {
                         if (response.status === 'success') {
-                            sessionStorage.setItem('reopenSettings', 'data'); // Reopen to Data Tab
+                            sessionStorage.setItem('reopenSettings', 'data');
                             location.reload();
                         } else {
                             Swal.fire('Error', response.message, 'error');
@@ -901,5 +913,52 @@ if (isset($conn)) {
                     });
             }
         });
+    }
+
+    // --- SAVE PROFILE SETTINGS AJAX ---
+    function saveProfileSettings() {
+        const username = document.getElementById('profileUsername').value.trim();
+        const email = document.getElementById('profileEmail').value.trim();
+        const password = document.getElementById('profilePassword').value;
+        const confirmPassword = document.getElementById('profileConfirmPassword').value;
+        const twoFactor = document.getElementById('twoFactorSwitch').checked ? '1' : '0';
+
+        if (password !== confirmPassword) {
+            Swal.fire('Error', 'Passwords do not match!', 'error');
+            return;
+        }
+
+        if (twoFactor === '1' && !email) {
+            Swal.fire('Warning', 'You must provide a recovery email to enable 2FA.', 'warning');
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('username', username);
+        formData.append('recovery_email', email); // Updated payload key
+        formData.append('password', password);
+        formData.append('two_factor_enabled', twoFactor);
+
+        fetch('../../app/controllers/updateProfileController.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Profile Updated!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        sessionStorage.setItem('reopenSettings', 'profile');
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            })
+            .catch(err => Swal.fire('Error', 'Failed to update profile.', 'error'));
     }
 </script>

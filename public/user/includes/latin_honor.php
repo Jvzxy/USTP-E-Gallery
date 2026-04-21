@@ -1,21 +1,5 @@
 <style>
-    .search-box .form-control {
-        background-color: #E8E8E8 !important;
-        border: none;
-        font-size: 0.9rem;
-        padding: 10px 20px 10px 40px;
-    }
-
-    .search-box .form-control:focus {
-        z-index: 1;
-        box-shadow: 0 0 0 0.25rem rgba(26, 24, 81, 0.1);
-    }
-
-    #no-results p {
-        font-family: 'Inter', sans-serif;
-        letter-spacing: 1px;
-        font-weight: 500;
-    }
+.search-box .form-control{background-color:#E8E8E8!important;border:none;font-size:.9rem;padding:10px 20px 10px 40px}.search-box .form-control:focus{z-index:1;box-shadow:0 0 0 .25rem rgba(26,24,81,.1)}#no-results p{font-family:'Inter',sans-serif;letter-spacing:1px;font-weight:500}
 </style>
 
 <section id="latin-honor" style="display:none;">
@@ -34,10 +18,21 @@
     <div class="d-flex align-items-center mb-4">
         <p class="fw-bold m-0 me-2">Class of</p>
         <select class="form-select form-select-sm w-auto fw-bold border-secondary cursor-pointer" id="yearSelectLatin">
-            <option value="2029" selected>2029</option>
-            <option value="2028">2028</option>
-            <option value="2027">2027</option>
-            <option value="2026">2026</option>
+            <?php
+            // FETCH DYNAMIC YEARS FROM DB
+            if (isset($conn)) {
+                $latin_yRes = $conn->query("SELECT year FROM class_years ORDER BY year DESC");
+                if ($latin_yRes && $latin_yRes->num_rows > 0) {
+                    $latin_first = true;
+                    while ($latin_row = $latin_yRes->fetch_assoc()) {
+                        echo '<option value="' . htmlspecialchars($latin_row['year']) . '" ' . ($latin_first ? 'selected' : '') . '>' . htmlspecialchars($latin_row['year']) . '</option>';
+                        $latin_first = false;
+                    }
+                } else {
+                    echo '<option value="">No years found</option>';
+                }
+            }
+            ?>
         </select>
     </div>
 
@@ -69,6 +64,7 @@
 
         // --- FETCH REAL DATABASE STUDENTS ---
         function loadStudentsForYear(year) {
+            if(!year) return; // Guard against empty year
             grid.innerHTML = '<div class="text-center w-100 py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted fw-bold">Loading Honors...</p></div>';
             allCards = [];
             
@@ -112,9 +108,11 @@
                 .catch(err => console.error("Error loading latin honors:", err));
         }
 
-        yearSelect.addEventListener('change', function() {
-            loadStudentsForYear(this.value);
-        });
+        if(yearSelect) {
+            yearSelect.addEventListener('change', function() {
+                loadStudentsForYear(this.value);
+            });
+        }
 
         function renderPagination(totalItems) {
             paginationContainer.innerHTML = '';
@@ -179,6 +177,8 @@
             });
         }
 
-        loadStudentsForYear(yearSelect.value);
+        if(yearSelect && yearSelect.value) {
+            loadStudentsForYear(yearSelect.value);
+        }
     });
 </script>

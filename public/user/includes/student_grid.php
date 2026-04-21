@@ -1,13 +1,5 @@
 <style>
-    #current-section-title {
-        font-size: 1.1rem;
-        border-left: 2px solid #dee2e6;
-        padding-left: 15px;
-    }
-    #student-container {
-        transition: all 0.3s ease;
-        min-height: 400px; 
-    }
+#current-section-title{font-size:1.1rem;border-left:2px solid #dee2e6;padding-left:15px}#student-container{transition:all .3s ease;min-height:400px}
 </style>
 
 <section id="student-grid-view" style="display:none; padding: 20px;">
@@ -25,10 +17,21 @@
     <div class="mb-4 d-flex align-items-center">
         <h6 class="fw-bold text-muted m-0 me-2" style="font-size: 0.9rem;">Class of</h6>
         <select class="form-select form-select-sm w-auto fw-bold text-muted border-secondary cursor-pointer" id="yearSelectGrid" style="font-size: 0.85rem;">
-            <option value="2029" selected>2029</option>
-            <option value="2028">2028</option>
-            <option value="2027">2027</option>
-            <option value="2026">2026</option>
+            <?php
+            // FETCH DYNAMIC YEARS FROM DB (Using unique variables to prevent scope overlap if included together)
+            if (isset($conn)) {
+                $grid_yRes = $conn->query("SELECT year FROM class_years ORDER BY year DESC");
+                if ($grid_yRes && $grid_yRes->num_rows > 0) {
+                    $grid_first = true;
+                    while ($grid_row = $grid_yRes->fetch_assoc()) {
+                        echo '<option value="' . htmlspecialchars($grid_row['year']) . '" ' . ($grid_first ? 'selected' : '') . '>' . htmlspecialchars($grid_row['year']) . '</option>';
+                        $grid_first = false;
+                    }
+                } else {
+                    echo '<option value="">No years found</option>';
+                }
+            }
+            ?>
         </select>
     </div>
 
@@ -53,10 +56,13 @@
     let gridCurrentPage = 1;
     let gridTotalStudents = []; 
 
-    document.getElementById('yearSelectGrid').addEventListener('change', function() {
-        let currentSection = document.getElementById('current-section-title').innerText;
-        generateSectionStudents(currentSection, this.value);
-    });
+    const gridYearSelect = document.getElementById('yearSelectGrid');
+    if(gridYearSelect) {
+        gridYearSelect.addEventListener('change', function() {
+            let currentSection = document.getElementById('current-section-title').innerText;
+            generateSectionStudents(currentSection, this.value);
+        });
+    }
 
     function renderGridPagination(totalItems) {
         const paginationContainer = document.getElementById('grid-pagination');
@@ -100,6 +106,8 @@
 
     // --- FETCH REAL STUDENTS FOR THE SECTION GRID ---
     function generateSectionStudents(sectionCode, year) {
+        if(!year) return; // Guard against empty year selection
+        
         gridCurrentPage = 1;
         gridTotalStudents = [];
         
@@ -149,7 +157,8 @@
 
         document.getElementById('current-section-title').innerText = sectionCode;
         
-        let currentYear = document.getElementById('yearSelectGrid').value;
+        let gridYearElement = document.getElementById('yearSelectGrid');
+        let currentYear = gridYearElement ? gridYearElement.value : '';
         generateSectionStudents(sectionCode, currentYear);
     }
 </script>
