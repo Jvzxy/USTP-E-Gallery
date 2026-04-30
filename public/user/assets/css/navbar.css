@@ -1,0 +1,26 @@
+    .dashboard-nav {
+        background-color: var(--navy-dark);
+        height: 70px;
+        display: flex;
+        align-items: center;
+    }
+
+    .bg-navy-pill {
+        background-color: var(--navy-light);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+    }
+
+    .bg-navy-pill .nav-link {
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .bg-navy-pill .nav-link.active {
+        background-color: white;
+        color: var(--navy-dark) !important;
+    }

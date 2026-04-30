@@ -1,5 +1,24 @@
 <?php
 session_start();
+
+// Include database config to fetch dynamic settings
+include_once("../app/config/config.php");
+
+// Clean path relative to where login.php is currently located
+$customLogo = "user/assets/Img/Logo/USTP-Web-Logo.webp";
+
+if (isset($conn)) {
+    // FIXED: Added ORDER BY id DESC to bypass any old duplicate rows!
+    $logoQuery = "SELECT setting_value FROM `system_settings` WHERE setting_key = 'school_logo' ORDER BY id DESC LIMIT 1";
+    $logoRes = $conn->query($logoQuery);
+    
+    if ($logoRes && $logoRes->num_rows > 0) {
+        $logoRow = $logoRes->fetch_assoc();
+        if (!empty($logoRow['setting_value'])) {
+            $customLogo = $logoRow['setting_value'];
+        }
+    }
+}
 ?>
 
 <!doctype html>
@@ -11,6 +30,8 @@ session_start();
     <title>E-Gallery Login</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+
 
     <style>
         body {
@@ -56,7 +77,7 @@ session_start();
             border-radius: 12px;
             border: 1px solid #f0f0f0;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            text-align: left; /* Keep the inputs left-aligned inside the card */
+            text-align: left; 
         }
 
         .form-label {
@@ -84,7 +105,6 @@ session_start();
             color: #bbb;
         }
 
-        /* Custom Checkbox */
         .form-check-input {
             cursor: pointer;
         }
@@ -120,21 +140,22 @@ session_start();
 
     <div class="login-container">
         
-        <img src="../public/user/assets/Img/Logo/USTP-Web-Logo.webp" alt="USTP Logo" class="logo-img">
+        <img src="<?php echo htmlspecialchars($customLogo); ?>?v=<?php echo time(); ?>" alt="E-Gallery Logo" class="logo-img">
+        
         <h2 class="welcome-text">Welcome back to E-Gallery</h2>
         <p class="sub-text">Enter your username and password to continue.</p>
 
         <div class="login-card">
-            <form id="loginForm" action="../app/controllers/loginController.php" method="POST" autocomplete="off" novalidate>
+            <form id="loginForm" action="../app/controllers/loginController.php" method="POST" autocomplete="on" novalidate>
                 
                 <div class="mb-4">
                     <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
-                    <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required autocomplete="username">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
                 </div>
 
                 <div class="mb-4 form-check d-flex align-items-center">
@@ -151,24 +172,40 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Form Validation Script
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+        document.addEventListener("DOMContentLoaded", function() {
+            const rmCheck = document.getElementById("rememberMe");
+            const usernameInput = document.getElementById("username");
 
-            if (username === '' || password === '') {
-                event.preventDefault(); 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Missing Information',
-                    text: 'Please enter both your Username and Password.',
-                    confirmButtonColor: '#ffb11f',
-                    customClass: {
-                        popup: 'rounded-4',
-                        confirmButton: 'px-4 py-2 fw-bold rounded-3'
-                    }
-                });
+            if (localStorage.getItem("rememberedEGalleryUser")) {
+                usernameInput.value = localStorage.getItem("rememberedEGalleryUser");
+                rmCheck.checked = true;
             }
+
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                const username = usernameInput.value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                if (username === '' || password === '') {
+                    event.preventDefault(); 
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Information',
+                        text: 'Please enter both your Username and Password.',
+                        confirmButtonColor: '#ffb11f',
+                        customClass: {
+                            popup: 'rounded-4',
+                            confirmButton: 'px-4 py-2 fw-bold rounded-3'
+                        }
+                    });
+                    return; 
+                }
+
+                if (rmCheck.checked && username !== '') {
+                    localStorage.setItem("rememberedEGalleryUser", username);
+                } else {
+                    localStorage.removeItem("rememberedEGalleryUser");
+                }
+            });
         });
     </script>
 

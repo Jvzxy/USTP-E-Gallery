@@ -1,7 +1,3 @@
-<style>
-.search-box .form-control{background-color:#E8E8E8!important;border:none;font-size:.9rem;padding:10px 20px 10px 40px}.search-box .form-control:focus{z-index:1;box-shadow:0 0 0 .25rem rgba(26,24,81,.1)}#no-results p{font-family:'Inter',sans-serif;letter-spacing:1px;font-weight:500}
-</style>
-
 <section id="latin-honor" style="display:none;">
     <div class="row mb-4 align-items-center">
         <div class="col-md-4"></div>

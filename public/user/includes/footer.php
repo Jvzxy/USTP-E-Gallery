@@ -1,28 +1,4 @@
-<style>
-    .user-footer {
-        background-color: var(--navy-dark);
-        color: white; width: 100%; margin-top: auto;
-    }
-    .footer-text {
-        color: #a0a0c0; font-size: 0.9rem; max-width: 320px; line-height: 1.6;
-    }
-    .footer-link {
-        color: #ffffff; text-decoration: none; font-size: 0.95rem;
-        transition: color 0.2s; display: block; margin-bottom: 10px;
-    }
-    .footer-link:hover { color: #a0a0c0; }
-    .linkedin-icon {
-        color: white; text-decoration: none; font-size: 1.5rem;
-        display: inline-flex; align-items: center; justify-content: center;
-        transition: color 0.3s ease;
-    }
-    .linkedin-label {
-        color: #a0a0c0; font-size: 0.75rem; font-weight: 500;
-        margin-top: 5px; letter-spacing: 0.5px; text-transform: uppercase;
-    }
-    .linkedin-icon:hover { color: #0a66c2; transform: none !important; box-shadow: none !important; }
-</style>
-
+<body>
     <!----Footer----->
     <footer class="user-footer py-5">
         <div class="container">

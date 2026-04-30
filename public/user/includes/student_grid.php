@@ -1,7 +1,3 @@
-<style>
-#current-section-title{font-size:1.1rem;border-left:2px solid #dee2e6;padding-left:15px}#student-container{transition:all .3s ease;min-height:400px}
-</style>
-
 <section id="student-grid-view" style="display:none; padding: 20px;">
     <div class="row mb-4">
         <div class="col-12 d-flex align-items-center">

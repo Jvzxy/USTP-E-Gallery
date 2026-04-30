@@ -4,7 +4,8 @@ $allDepartments = [];
 $allPrograms = [];
 $sysSettings = [
     'system_name' => 'USTP E-Gallery',
-    'maintenance_mode' => '0'
+    'maintenance_mode' => '0',
+    'school_logo' => '' // Added default for school logo
 ];
 
 if (isset($conn)) {
@@ -55,221 +56,7 @@ if (isset($conn)) {
 }
 ?>
 
-<style>
-    #settingsModal .modal-content {
-        border-radius: 12px;
-        height: 650px;
-        min-height: 650px;
-        overflow: hidden
-    }
 
-    #settingsModal .settings-sidebar {
-        width: 250px;
-        flex-shrink: 0;
-        background-color: var(--bs-body-bg);
-        border-right: 2px solid var(--bs-border-color);
-        padding: 30px 20px
-    }
-
-    #settingsModal .settings-main {
-        background-color: var(--bs-body-bg);
-        padding: 40px;
-        position: relative;
-        overflow-y: auto
-    }
-
-    #settingsModal .settings-nav .nav-link {
-        color: var(--bs-body-color);
-        font-weight: 800;
-        font-size: .85rem;
-        border-radius: 8px;
-        margin-bottom: 5px;
-        padding: 12px 15px;
-        text-align: left;
-        transition: all .2s
-    }
-
-    #settingsModal .settings-nav .nav-link.active {
-        background-color: rgba(26, 24, 81, .1);
-        color: #1A1851
-    }
-
-    #settingsModal .settings-nav .nav-link:hover:not(.active) {
-        background-color: var(--bs-secondary-bg);
-        color: inherit
-    }
-
-    #settingsModal .settings-nav .nav-link i {
-        font-size: 1.1rem;
-        width: 24px;
-        display: inline-block
-    }
-
-    #settingsModal .btn-navy {
-        background-color: #1A1851 !important;
-        color: #fff !important;
-        font-weight: 800;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 24px;
-        transition: .2s
-    }
-
-    #settingsModal .btn-navy:hover {
-        background-color: #2a2775 !important;
-        color: #fff !important;
-        opacity: 1 !important
-    }
-
-    #settingsModal .form-switch.settings-switch .form-check-input {
-        width: 3em;
-        height: 1.5em;
-        cursor: pointer
-    }
-
-    #settingsModal .settings-switch .form-check-label {
-        padding-top: 4px;
-        font-weight: 700;
-        cursor: pointer
-    }
-
-    #settingsModal .theme-list-group .list-group-item {
-        cursor: pointer;
-        font-weight: 600;
-        border: none;
-        border-radius: 8px !important;
-        margin-bottom: 5px;
-        padding: 12px 20px;
-        transition: .2s
-    }
-
-    #settingsModal .theme-list-group .list-group-item.active-theme {
-        background-color: rgba(26, 24, 81, .1);
-        color: #1A1851;
-        font-weight: 800
-    }
-
-    #settingsModal .theme-apply-container {
-        background: var(--bs-secondary-bg);
-        border: 1px solid var(--bs-border-color);
-        border-radius: 12px;
-        padding: 20px;
-        margin-top: 30px
-    }
-
-    .custom-input-modal .modal-content {
-        border-radius: 10px !important;
-        padding: 35px;
-        border: 1px solid var(--bs-border-color);
-        background-color: var(--bs-body-bg);
-        color: var(--bs-body-color)
-    }
-
-    .custom-input-modal h4 {
-        font-weight: 900;
-        margin-bottom: 25px;
-        font-size: 1.5rem
-    }
-
-    .custom-input-modal .form-label {
-        font-weight: 800;
-        font-size: .95rem;
-        color: var(--bs-body-color)
-    }
-
-    .custom-input-modal .form-control,
-    .custom-input-modal .form-select {
-        border-radius: 4px;
-        background-color: var(--bs-body-bg);
-        color: var(--bs-body-color);
-        border: 2px solid #e2e8f0;
-        padding: 12px 15px
-    }
-
-    .custom-input-modal .form-control:focus,
-    .custom-input-modal .form-select:focus {
-        border-color: #1A1851;
-        box-shadow: none
-    }
-
-    .btn-outline-navy {
-        border: 2px solid #1A1851;
-        color: #1A1851;
-        background: 0 0;
-        border-radius: 4px;
-        font-weight: 800;
-        transition: .2s
-    }
-
-    .btn-outline-navy:hover {
-        background-color: rgba(26, 24, 81, .05);
-        color: #1A1851
-    }
-
-    .custom-input-modal .btn-navy {
-        border-radius: 4px
-    }
-
-    [data-bs-theme=dark] #settingsModal .modal-content,
-    [data-bs-theme=dark] #settingsModal .settings-main,
-    [data-bs-theme=dark] #settingsModal .settings-sidebar {
-        background-color: #1e1e1e !important;
-        border-color: #333 !important;
-        color: #e0e0e0 !important
-    }
-
-    [data-bs-theme=dark] #settingsModal .settings-nav .nav-link.active {
-        background-color: rgba(130, 170, 255, .1);
-        color: #82aaff
-    }
-
-    [data-bs-theme=dark] #settingsModal .settings-nav .nav-link:hover:not(.active) {
-        color: #fff !important
-    }
-
-    [data-bs-theme=dark] #settingsModal .btn-navy {
-        background-color: #82aaff !important;
-        color: #121212 !important
-    }
-
-    [data-bs-theme=dark] #settingsModal .btn-navy:hover {
-        background-color: #a0c2ff !important;
-        color: #121212 !important;
-        opacity: 1 !important
-    }
-
-    [data-bs-theme=dark] #settingsModal .theme-list-group .list-group-item.active-theme {
-        background-color: rgba(130, 170, 255, .1);
-        color: #82aaff
-    }
-
-    [data-bs-theme=dark] .custom-input-modal .modal-content {
-        background-color: #1e1e1e !important;
-        border-color: #333 !important
-    }
-
-    [data-bs-theme=dark] .custom-input-modal .form-control,
-    [data-bs-theme=dark] .custom-input-modal .form-select {
-        background-color: #2c2c2c !important;
-        color: #fff !important;
-        border-color: #555 !important
-    }
-
-    [data-bs-theme=dark] .custom-input-modal .form-control:focus,
-    [data-bs-theme=dark] .custom-input-modal .form-select:focus {
-        border-color: #82aaff !important
-    }
-
-    [data-bs-theme=dark] .btn-outline-navy {
-        border-color: #82aaff;
-        color: #82aaff
-    }
-
-    [data-bs-theme=dark] .btn-outline-navy:hover {
-        background-color: rgba(130, 170, 255, .1);
-        color: #82aaff
-    }
-</style>
 
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -347,10 +134,19 @@ if (isset($conn)) {
                                 <div class="col-md-6">
                                     <label class="form-label mb-3">School Logo</label>
                                     <div class="border rounded-3 p-3 text-center bg-body-secondary" style="border-style: dashed !important;">
-                                        <i class="bi bi-image fs-1 text-muted"></i>
+                                        <?php 
+                                        $currentLogo = $sysSettings['school_logo'] ?? '';
+                                        if (!empty($currentLogo)): 
+                                        ?>
+                                            <img id="logoPreview" src="../<?php echo htmlspecialchars($currentLogo); ?>" style="max-width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px;">
+                                            <i class="bi bi-image fs-1 text-muted" id="logoIconPlaceholder" style="display: none;"></i>
+                                        <?php else: ?>
+                                            <img id="logoPreview" src="" style="display: none; max-width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px;">
+                                            <i class="bi bi-image fs-1 text-muted" id="logoIconPlaceholder"></i>
+                                        <?php endif; ?>
                                         <p class="text-muted small mt-2 mb-2">Upload a new logo to replace the E-Gallery text.</p>
                                         <button class="btn btn-outline-secondary btn-sm fw-bold px-4" onclick="document.getElementById('logoUpload').click()">Browse Files</button>
-                                        <input type="file" id="logoUpload" hidden accept="image/png, image/jpeg">
+                                        <input type="file" id="logoUpload" hidden accept="image/png, image/jpeg, image/webp" onchange="previewSchoolLogo(event)">
                                     </div>
                                 </div>
 
@@ -652,6 +448,76 @@ if (isset($conn)) {
         }
     });
 
+    let pendingTheme = localStorage.getItem('themeMode') || 'light';
+    let pendingLogoFile = null;
+
+    // --- NEW: ONLY PREVIEWS THE LOGO ON SELECTION ---
+    function previewSchoolLogo(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        pendingLogoFile = file; // Holds the file securely until "Apply" is clicked
+
+        const preview = document.getElementById('logoPreview');
+        const icon = document.getElementById('logoIconPlaceholder');
+        if (icon) icon.style.display = 'none';
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'inline-block';
+    }
+
+    // --- NEW: APPLIES THE THEME AND UPLOADS LOGO SIMULTANEOUSLY ---
+    function applySelectedTheme() {
+        // 1. Instantly save and apply the Theme
+        localStorage.setItem('themeMode', pendingTheme);
+        if (typeof applyGlobalTheme === 'function') {
+            applyGlobalTheme(pendingTheme);
+        }
+
+        // 2. Check if an image is waiting to be uploaded
+        if (pendingLogoFile) {
+            let formData = new FormData();
+            formData.append('logo', pendingLogoFile);
+
+            Swal.fire({
+                title: 'Applying Changes...',
+                text: 'Uploading logo and updating theme.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            fetch('../../app/controllers/uploadLogoController.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Changes Applied!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        sessionStorage.setItem('reopenSettings', 'theme');
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            }).catch(err => {
+                Swal.fire('Error', 'Failed to upload logo.', 'error');
+            });
+        } else {
+            // No image was selected, just show Theme applied message
+            Swal.fire({
+                icon: 'success',
+                title: 'Theme Applied!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    }
+
     // --- DATABASE SETTINGS AJAX LOGIC ---
     function saveGeneralSettings() {
         const sysName = document.getElementById('systemNameInput').value.trim();
@@ -688,8 +554,6 @@ if (isset($conn)) {
             });
     }
 
-    let pendingTheme = localStorage.getItem('themeMode') || 'light';
-
     function selectThemeMode(element, mode) {
         pendingTheme = mode;
         const allItems = document.querySelectorAll('.theme-list-group .list-group-item');
@@ -702,20 +566,6 @@ if (isset($conn)) {
         element.querySelector('.theme-check').classList.remove('d-none');
     }
 
-    function applySelectedTheme() {
-        localStorage.setItem('themeMode', pendingTheme);
-        if (typeof applyGlobalTheme === 'function') {
-            applyGlobalTheme(pendingTheme);
-        }
-        Swal.fire({
-            icon: 'success',
-            title: 'Theme Applied!',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    }
-
-    // --- NEW: FUNCTIONAL EXPORT CSV BUTTON ---
     function exportStudentData() {
         const selectedYear = document.getElementById('exportClassYear').value;
 
@@ -727,11 +577,9 @@ if (isset($conn)) {
             timer: 1500
         });
 
-        // Instantly redirect the browser to the PHP script to trigger the download
         window.location.href = `../../app/controllers/exportCsvController.php?year=${selectedYear}`;
     }
 
-    // --- NEW: FUNCTIONAL DATABASE BACKUP BUTTON ---
     function downloadDatabaseBackup() {
         Swal.fire({
             icon: 'info',
@@ -741,7 +589,6 @@ if (isset($conn)) {
             timer: 2000
         });
 
-        // Instantly redirect the browser to the PHP script to trigger the .sql download
         window.location.href = '../../app/controllers/backupDatabaseController.php';
     }
 
@@ -935,7 +782,7 @@ if (isset($conn)) {
 
         let formData = new FormData();
         formData.append('username', username);
-        formData.append('recovery_email', email); // Updated payload key
+        formData.append('recovery_email', email);
         formData.append('password', password);
         formData.append('two_factor_enabled', twoFactor);
 

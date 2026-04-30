@@ -1,23 +1,3 @@
-<style>
-    #section-view-title {
-        font-size: 1.1rem;
-        border-left: 2px solid #dee2e6;
-        padding-left: 15px;
-    }
-    .section-card {
-        height: 160px; border-radius: 12px;
-        background: url('assets/Img/Logo/Graduation_Section.webp') center/cover no-repeat;
-        position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s ease;
-    }
-    .section-card:hover { transform: translateY(-5px); }
-    .section-blur-overlay {
-        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); 
-        display: flex; justify-content: center; align-items: center;
-        color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-</style>
-
 <section id="section-view" style="display:none; padding: 20px;">
     <div class="row mb-5">
         <div class="col-12 d-flex align-items-center">

@@ -1,0 +1,213 @@
+    #settingsModal .modal-content {
+        border-radius: 12px;
+        height: 650px;
+        min-height: 650px;
+        overflow: hidden
+    }
+
+    #settingsModal .settings-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        background-color: var(--bs-body-bg);
+        border-right: 2px solid var(--bs-border-color);
+        padding: 30px 20px
+    }
+
+    #settingsModal .settings-main {
+        background-color: var(--bs-body-bg);
+        padding: 40px;
+        position: relative;
+        overflow-y: auto
+    }
+
+    #settingsModal .settings-nav .nav-link {
+        color: var(--bs-body-color);
+        font-weight: 800;
+        font-size: .85rem;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        padding: 12px 15px;
+        text-align: left;
+        transition: all .2s
+    }
+
+    #settingsModal .settings-nav .nav-link.active {
+        background-color: rgba(26, 24, 81, .1);
+        color: #1A1851
+    }
+
+    #settingsModal .settings-nav .nav-link:hover:not(.active) {
+        background-color: var(--bs-secondary-bg);
+        color: inherit
+    }
+
+    #settingsModal .settings-nav .nav-link i {
+        font-size: 1.1rem;
+        width: 24px;
+        display: inline-block
+    }
+
+    #settingsModal .btn-navy {
+        background-color: #1A1851 !important;
+        color: #fff !important;
+        font-weight: 800;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 24px;
+        transition: .2s
+    }
+
+    #settingsModal .btn-navy:hover {
+        background-color: #2a2775 !important;
+        color: #fff !important;
+        opacity: 1 !important
+    }
+
+    #settingsModal .form-switch.settings-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        cursor: pointer
+    }
+
+    #settingsModal .settings-switch .form-check-label {
+        padding-top: 4px;
+        font-weight: 700;
+        cursor: pointer
+    }
+
+    #settingsModal .theme-list-group .list-group-item {
+        cursor: pointer;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px !important;
+        margin-bottom: 5px;
+        padding: 12px 20px;
+        transition: .2s
+    }
+
+    #settingsModal .theme-list-group .list-group-item.active-theme {
+        background-color: rgba(26, 24, 81, .1);
+        color: #1A1851;
+        font-weight: 800
+    }
+
+    #settingsModal .theme-apply-container {
+        background: var(--bs-secondary-bg);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 30px
+    }
+
+    .custom-input-modal .modal-content {
+        border-radius: 10px !important;
+        padding: 35px;
+        border: 1px solid var(--bs-border-color);
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color)
+    }
+
+    .custom-input-modal h4 {
+        font-weight: 900;
+        margin-bottom: 25px;
+        font-size: 1.5rem
+    }
+
+    .custom-input-modal .form-label {
+        font-weight: 800;
+        font-size: .95rem;
+        color: var(--bs-body-color)
+    }
+
+    .custom-input-modal .form-control,
+    .custom-input-modal .form-select {
+        border-radius: 4px;
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 2px solid #e2e8f0;
+        padding: 12px 15px
+    }
+
+    .custom-input-modal .form-control:focus,
+    .custom-input-modal .form-select:focus {
+        border-color: #1A1851;
+        box-shadow: none
+    }
+
+    .btn-outline-navy {
+        border: 2px solid #1A1851;
+        color: #1A1851;
+        background: 0 0;
+        border-radius: 4px;
+        font-weight: 800;
+        transition: .2s
+    }
+
+    .btn-outline-navy:hover {
+        background-color: rgba(26, 24, 81, .05);
+        color: #1A1851
+    }
+
+    .custom-input-modal .btn-navy {
+        border-radius: 4px
+    }
+
+    [data-bs-theme=dark] #settingsModal .modal-content,
+    [data-bs-theme=dark] #settingsModal .settings-main,
+    [data-bs-theme=dark] #settingsModal .settings-sidebar {
+        background-color: #1e1e1e !important;
+        border-color: #333 !important;
+        color: #e0e0e0 !important
+    }
+
+    [data-bs-theme=dark] #settingsModal .settings-nav .nav-link.active {
+        background-color: rgba(130, 170, 255, .1);
+        color: #82aaff
+    }
+
+    [data-bs-theme=dark] #settingsModal .settings-nav .nav-link:hover:not(.active) {
+        color: #fff !important
+    }
+
+    [data-bs-theme=dark] #settingsModal .btn-navy {
+        background-color: #82aaff !important;
+        color: #121212 !important
+    }
+
+    [data-bs-theme=dark] #settingsModal .btn-navy:hover {
+        background-color: #a0c2ff !important;
+        color: #121212 !important;
+        opacity: 1 !important
+    }
+
+    [data-bs-theme=dark] #settingsModal .theme-list-group .list-group-item.active-theme {
+        background-color: rgba(130, 170, 255, .1);
+        color: #82aaff
+    }
+
+    [data-bs-theme=dark] .custom-input-modal .modal-content {
+        background-color: #1e1e1e !important;
+        border-color: #333 !important
+    }
+
+    [data-bs-theme=dark] .custom-input-modal .form-control,
+    [data-bs-theme=dark] .custom-input-modal .form-select {
+        background-color: #2c2c2c !important;
+        color: #fff !important;
+        border-color: #555 !important
+    }
+
+    [data-bs-theme=dark] .custom-input-modal .form-control:focus,
+    [data-bs-theme=dark] .custom-input-modal .form-select:focus {
+        border-color: #82aaff !important
+    }
+
+    [data-bs-theme=dark] .btn-outline-navy {
+        border-color: #82aaff;
+        color: #82aaff
+    }
+
+    [data-bs-theme=dark] .btn-outline-navy:hover {
+        background-color: rgba(130, 170, 255, .1);
+        color: #82aaff
+    }
