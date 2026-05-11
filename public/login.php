@@ -6,9 +6,10 @@ include_once("../app/config/config.php");
 
 // Clean path relative to where login.php is currently located
 $customLogo = "user/assets/Img/Logo/USTP-Web-Logo.webp";
+$sysNameDisplay = "E-Gallery"; // Fallback system name
 
 if (isset($conn)) {
-    // FIXED: Added ORDER BY id DESC to bypass any old duplicate rows!
+    // Fetch dynamic logo
     $logoQuery = "SELECT setting_value FROM `system_settings` WHERE setting_key = 'school_logo' ORDER BY id DESC LIMIT 1";
     $logoRes = $conn->query($logoQuery);
     
@@ -16,6 +17,15 @@ if (isset($conn)) {
         $logoRow = $logoRes->fetch_assoc();
         if (!empty($logoRow['setting_value'])) {
             $customLogo = $logoRow['setting_value'];
+        }
+    }
+
+    // Fetch dynamic system name
+    $sysNameQuery = $conn->query("SELECT setting_value FROM system_settings WHERE setting_key = 'system_name'");
+    if ($sysNameQuery && $sysNameQuery->num_rows > 0) {
+        $row = $sysNameQuery->fetch_assoc();
+        if (!empty($row['setting_value'])) {
+            $sysNameDisplay = $row['setting_value'];
         }
     }
 }
@@ -27,11 +37,9 @@ if (isset($conn)) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>E-Gallery Login</title>
+    <title><?php echo htmlspecialchars($sysNameDisplay); ?> Login</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-
 
     <style>
         body {
@@ -52,10 +60,11 @@ if (isset($conn)) {
         }
 
         .logo-img {
-            width: 300px; 
-            max-width: 100%; 
-            object-fit: contain;
-            margin-bottom: 25px;
+            max-width: 100% !important;
+            max-height: 130px !important; 
+            width: auto !important;
+            object-fit: contain !important;
+            margin-bottom: 25px !important;
         }
 
         .welcome-text {
@@ -140,9 +149,9 @@ if (isset($conn)) {
 
     <div class="login-container">
         
-        <img src="<?php echo htmlspecialchars($customLogo); ?>?v=<?php echo time(); ?>" alt="E-Gallery Logo" class="logo-img">
+        <img src="<?php echo htmlspecialchars($customLogo); ?>?v=<?php echo time(); ?>" alt="<?php echo htmlspecialchars($sysNameDisplay); ?> Logo" class="logo-img">
         
-        <h2 class="welcome-text">Welcome back to E-Gallery</h2>
+        <h2 class="welcome-text">Welcome back to <?php echo htmlspecialchars($sysNameDisplay); ?></h2>
         <p class="sub-text">Enter your username and password to continue.</p>
 
         <div class="login-card">

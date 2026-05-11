@@ -8,7 +8,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <button class="menu-toggle-btn" onclick="toggleSidebar()">
                 <i class="bi bi-list fs-4"></i>
             </button>
-            <div class="sidebar-logo text-nowrap">E-Gallery</div>
+            <div class="sidebar-logo text-nowrap">
+                <?php
+                    $sysNameDisplay = 'E-Gallery'; 
+                    if (isset($conn)) {
+                        $sysNameQuery = $conn->query("SELECT setting_value FROM system_settings WHERE setting_key = 'system_name'");
+                        if ($sysNameQuery && $sysNameQuery->num_rows > 0) {
+                            $row = $sysNameQuery->fetch_assoc();
+                            $sysNameDisplay = $row['setting_value'];
+                        }
+                    }
+                    echo htmlspecialchars($sysNameDisplay);
+                ?>
+            </div>
         </div>
 
         <small class="text-secondary px-4 mt-2 d-block fw-bold menu-label" style="font-size: 10px;">Main menu</small>

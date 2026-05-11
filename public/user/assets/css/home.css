@@ -31,3 +31,64 @@
     }
     .carousel-item { transition: transform 0.6s ease-in-out; }
     .carousel-indicators-custom .active { background: var(--navy-dark); }
+
+
+
+    
+    .college-carousel-wrapper {
+            position: relative;
+            padding: 0 10px; /* Slight padding to accommodate button shadows */
+        }
+        
+        .college-scroll-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 1.5rem; /* Matches Bootstrap g-4 spacing */
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;  /* Hides scrollbar in IE and Edge */
+            scrollbar-width: none;  /* Hides scrollbar in Firefox */
+            padding-bottom: 15px; /* Space for card shadows */
+            padding-top: 5px;
+        }
+        
+        .college-scroll-container::-webkit-scrollbar {
+            display: none; /* Hides scrollbar in Chrome, Safari, Opera */
+        }
+        
+        .college-card-item {
+            flex: 0 0 auto;
+            width: 280px; /* Fixed width so cards don't shrink */
+        }
+        
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            cursor: pointer;
+            color: var(--navy-dark);
+            transition: all 0.2s ease;
+        }
+        
+        .carousel-nav-btn:hover {
+            background-color: var(--navy-dark);
+            color: white;
+        }
+        
+        .carousel-btn-left {
+            left: -20px; /* Pulls button slightly outside the container */
+        }
+        
+        .carousel-btn-right {
+            right: -20px;
+        }

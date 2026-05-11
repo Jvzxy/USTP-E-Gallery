@@ -78,9 +78,11 @@ if (file_exists($db_path)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <link rel="stylesheet" href="assets/css/upload.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/upload_photo.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/settings_modal.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/upload_photo.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="assetscss/upload_user.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/upload_user.css?v=<?php echo time(); ?>">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

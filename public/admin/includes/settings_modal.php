@@ -5,7 +5,7 @@ $allPrograms = [];
 $sysSettings = [
     'system_name' => 'USTP E-Gallery',
     'maintenance_mode' => '0',
-    'school_logo' => '' // Added default for school logo
+    'school_logo' => '' 
 ];
 
 if (isset($conn)) {
@@ -134,9 +134,9 @@ if (isset($conn)) {
                                 <div class="col-md-6">
                                     <label class="form-label mb-3">School Logo</label>
                                     <div class="border rounded-3 p-3 text-center bg-body-secondary" style="border-style: dashed !important;">
-                                        <?php 
+                                        <?php
                                         $currentLogo = $sysSettings['school_logo'] ?? '';
-                                        if (!empty($currentLogo)): 
+                                        if (!empty($currentLogo)):
                                         ?>
                                             <img id="logoPreview" src="../<?php echo htmlspecialchars($currentLogo); ?>" style="max-width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px;">
                                             <i class="bi bi-image fs-1 text-muted" id="logoIconPlaceholder" style="display: none;"></i>
@@ -482,31 +482,33 @@ if (isset($conn)) {
                 title: 'Applying Changes...',
                 text: 'Uploading logo and updating theme.',
                 allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+                didOpen: () => {
+                    Swal.showLoading();
+                }
             });
 
             fetch('../../app/controllers/uploadLogoController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Changes Applied!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        sessionStorage.setItem('reopenSettings', 'theme');
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            }).catch(err => {
-                Swal.fire('Error', 'Failed to upload logo.', 'error');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Changes Applied!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            sessionStorage.setItem('reopenSettings', 'theme');
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                }).catch(err => {
+                    Swal.fire('Error', 'Failed to upload logo.', 'error');
+                });
         } else {
             // No image was selected, just show Theme applied message
             Swal.fire({
@@ -808,4 +810,46 @@ if (isset($conn)) {
             })
             .catch(err => Swal.fire('Error', 'Failed to update profile.', 'error'));
     }
+
+
+    function saveGeneralSettings() {
+        let sysName = document.getElementById('systemNameInput').value;
+        let maintMode = document.getElementById('maintenanceSwitch').checked ? '1' : '0';
+
+        if (!sysName.trim()) {
+            Swal.fire('Hold up!', 'System Name cannot be empty.', 'warning');
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('system_name', sysName);
+        formData.append('maintenance_mode', maintMode);
+
+        Swal.fire({
+            title: 'Saving Settings...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        // This path points from your admin folder UP to your controllers folder
+        fetch('../../app/controllers/updateSettingsController.php', { 
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire('Saved!', data.message, 'success').then(() => {
+                    location.reload(); 
+                });
+            } else {
+                Swal.fire('Error', data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+            Swal.fire('Error', 'A server error occurred while saving. Check your console!', 'error');
+        });
+    }
+
 </script>

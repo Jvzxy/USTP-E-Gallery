@@ -41,6 +41,9 @@ if ($setRes && $setRes->num_rows > 0) {
 
     <link rel="stylesheet" href="assets/css/upload.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/upload_photo.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/settings_modal.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/upload_photo.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/upload_user.css?v=<?php echo time(); ?>">
 
 </head>
 
