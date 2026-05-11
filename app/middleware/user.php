@@ -14,7 +14,7 @@ else if ($_SESSION['userRole'] === 'admin') {
 
 
 // Inactivity timeout logic
-$timeout_duration = 180; 
+$timeout_duration = 600; 
 
 if (isset($_SESSION['last_activity'])) {
     $elapsed_time = time() - $_SESSION['last_activity'];
@@ -24,7 +24,7 @@ if (isset($_SESSION['last_activity'])) {
         session_destroy();  
         
         session_start(); 
-        $_SESSION['error'] = "You were automatically logged out due to 3 minutes of inactivity.";
+        $_SESSION['error'] = "You were automatically logged out due to 10 minutes of inactivity.";
         header("Location: ../../public/login.php");
         exit();
     }

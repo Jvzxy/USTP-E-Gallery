@@ -1,19 +1,67 @@
 <?php
 session_start();
-// include '../../app/config/db_connection.php'; 
-// include '../../app/controllers/communityController.php'; 
+include '../../app/config/config.php'; // ACTIVATED
+include '../../app/controllers/communityController.php'; // ACTIVATED
 
-// $postId = isset($_GET['id']) ? $_GET['id'] : 1;
-// $details = getPostDetails($conn, $postId);
-// $post = $details['post'];
-// $comments = $details['comments'];
+if (!isset($_GET['id'])) {
+    header("Location: community.php");
+    exit();
+}
 
-// DUMMY DATA FOR SPECIFIC POST (Remove once connected)
-$post = ['id' => 1, 'username' => '2024304880', 'title' => 'Alumini party', 'body' => 'When man ta mga party oyyy unta ma dayonnn HAHAHAHHAHAHAHAHAHAHHAHJAHAHASHAHSHAHS', 'created_at' => '2026-05-11 10:30:00'];
-$comments = [
-    ['id' => 1, 'username' => '2024304770', 'body' => 'Taraaaaa mingaw na pd ko ninyooooo', 'created_at' => '2026-05-12 00:23:00'],
-    ['id' => 2, 'username' => '2024304770', 'body' => 'Sige daii set na ug date', 'created_at' => '2026-05-12 03:49:00', 'is_reply' => true] // Simulating a threaded reply
-];
+$postId = $_GET['id'];
+$details = getPostDetails($conn, $postId);
+
+if (!$details['post']) {
+    header("Location: community.php");
+    exit();
+}
+
+$post = $details['post'];
+$commentsTree = $details['comments'];
+
+// CHANGED: We created a reusable function to draw comments and their nested replies!
+function renderComments($commentsList) {
+    global $post; // We need access to the $post['id'] variable inside this function
+    
+    foreach ($commentsList as $comment) {
+        ?>
+        <div class="comment-thread mt-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="fw-bold small text-dark"><?php echo htmlspecialchars($comment['username']); ?></span>
+                <span class="text-muted" style="font-size: 0.75rem;">
+                    <?php echo timeAgo($comment['created_at']); ?> 
+                </span>
+            </div>
+            
+            <p class="mb-1 text-dark" style="font-size: 0.95rem;"><?php echo nl2br(htmlspecialchars($comment['body'])); ?></p>
+            
+            <a href="javascript:void(0);" onclick="toggleReplyForm(<?php echo $comment['id']; ?>)" class="text-secondary text-decoration-none fw-bold d-inline-block mb-2" style="font-size: 0.75rem;"><i class="bi bi-reply-fill"></i> Reply</a>
+
+            <div id="reply-form-<?php echo $comment['id']; ?>" class="mt-2 d-none mb-3">
+                <form action="../../app/controllers/communityController.php" method="POST">
+                    <input type="hidden" name="action" value="create_comment">
+                    <input type="hidden" name="post_id" value="<?php echo htmlspecialchars($post['id']); ?>">
+                    <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($comment['id']); ?>">
+                    
+                    <div class="mb-2">
+                        <textarea name="body" class="form-control rounded-1 border form-control-sm" rows="2" placeholder="Replying to <?php echo htmlspecialchars($comment['username']); ?>..." required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-start gap-2">
+                        <button type="submit" class="btn btn-sm text-white fw-bold px-3 rounded-2" style="background-color: var(--navy-dark);">Post Reply</button>
+                        <button type="button" onclick="toggleReplyForm(<?php echo $comment['id']; ?>)" class="btn btn-sm btn-light border">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <?php if (!empty($comment['replies'])): ?>
+                <div class="mt-2 ps-2">
+                    <?php renderComments($comment['replies']); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +79,16 @@ $comments = [
         .post-card { border: 1px solid #EAEAEA; border-radius: 8px; background: white; }
         .search-bar { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 20px;}
         .search-bar::placeholder { color: #ccc; }
+        
+        /* The magical CSS class that indents replies! */
         .comment-thread { border-left: 2px solid #EAEAEA; padding-left: 15px; margin-left: 5px; }
+        
+        .search-bar:focus, .search-bar:hover {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: white !important;
+            box-shadow: none !important;
+            border-color: rgba(255,255,255,0.5) !important;
+        }
     </style>
 </head>
 <body>
@@ -39,10 +96,13 @@ $comments = [
     <nav class="navbar navbar-expand-lg bg-navy py-3 px-4 shadow-sm">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <h5 class="text-white fw-bold mb-0">USTP-E-Gallery Community Hub</h5>
-            <form class="d-flex w-25">
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-0 text-white ms-2" style="position: absolute; z-index: 10;"><i class="bi bi-search"></i></span>
-                    <input class="form-control search-bar ps-5 py-1 text-white" type="search" placeholder="Search for tittles...">
+            
+            <form action="community.php" method="GET" class="d-flex w-25">
+                <div class="position-relative w-100">
+                    <button type="submit" class="border-0 bg-transparent text-white" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 10; outline: none; box-shadow: none; cursor: pointer;">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <input name="search" class="form-control search-bar ps-5 py-1 text-white w-100" type="search" placeholder="Search for titles..." style="border-radius: 20px !important; outline: none;">
                 </div>
             </form>
         </div>
@@ -59,30 +119,39 @@ $comments = [
                 <div class="post-card p-5 mb-4">
                     
                     <div class="mb-4">
-                        <span class="fw-bold fs-6 mb-3 d-block"><?php echo htmlspecialchars($post['username']); ?></span>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-bold fs-6 d-block"><?php echo htmlspecialchars($post['username']); ?></span>
+                            <small class="text-muted"><?php echo timeAgo($post['created_at']); ?></small>
+                        </div>
                         <h3 class="fw-bold mb-4"><?php echo htmlspecialchars($post['title']); ?></h3>
                         <p class="mb-5 fs-5" style="color: #000;"><?php echo nl2br(htmlspecialchars($post['body'])); ?></p>
                         
                         <div class="d-flex gap-3 pb-3 border-bottom border-2">
-                            <span class="text-dark fw-bold"><i class="bi bi-chat me-1"></i> comment</span>
+                            <span class="text-dark fw-bold"><i class="bi bi-chat me-1"></i> Comments</span>
                         </div>
                     </div>
 
                     <div class="mt-4">
-                        <?php foreach ($comments as $index => $comment): ?>
-                            
-                            <div class="mb-4 <?php echo isset($comment['is_reply']) ? 'comment-thread mt-3' : ''; ?>">
-                                <div class="d-flex align-items-center gap-3 mb-2">
-                                    <span class="fw-bold small"><?php echo htmlspecialchars($comment['username']); ?></span>
-                                    <span class="text-muted" style="font-size: 0.75rem;">
-                                        <?php echo $index == 0 ? '4hrs ago' : '34mins ago'; ?> 
-                                    </span>
-                                </div>
-                                <p class="mb-1 text-dark fw-bold"><?php echo nl2br(htmlspecialchars($comment['body'])); ?></p>
-                                <a href="#" class="text-dark text-decoration-none fw-bold" style="font-size: 0.8rem;">Reply</a>
+                        <?php if(empty($commentsTree)): ?>
+                            <p class="text-muted">No comments yet. Be the first to reply!</p>
+                        <?php else: ?>
+                            <?php renderComments($commentsTree); ?>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="mt-5 pt-4 border-top">
+                        <h6 class="fw-bold mb-3">Leave a top-level comment</h6>
+                        <form action="../../app/controllers/communityController.php" method="POST">
+                            <input type="hidden" name="action" value="create_comment">
+                            <input type="hidden" name="post_id" value="<?php echo htmlspecialchars($post['id']); ?>">
+                            <div class="mb-3">
+                                <textarea name="body" class="form-control rounded-1 border" rows="3" placeholder="Write your thoughts here..." required></textarea>
                             </div>
-
-                        <?php endforeach; ?>
+                            
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn text-white fw-bold px-4 rounded-2" style="background-color: var(--navy-dark);">Post Comment</button>
+                            </div>
+                        </form>
                     </div>
 
                 </div>
@@ -90,5 +159,16 @@ $comments = [
         </div>
     </div>
 
+    <script>
+        function toggleReplyForm(commentId) {
+            const form = document.getElementById('reply-form-' + commentId);
+            if (form.classList.contains('d-none')) {
+                form.classList.remove('d-none');
+            } else {
+                form.classList.add('d-none');
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
