@@ -8,7 +8,7 @@ $maintRes = $conn->query($maintQuery);
 if ($maintRes && $maintRes->num_rows > 0) {
     $maintRow = $maintRes->fetch_assoc();
     if ($maintRow['setting_value'] === '1') {
-        header("Location: ../maintenance.php");
+        header("Location: ../maintenance");
         exit();
     }
 }
@@ -62,47 +62,7 @@ if ($maintRes && $maintRes->num_rows > 0) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        function showSection(sectionId, navElement) {
-            const sections = ['home', 'latin-honor', 'departments', 'section-view', 'student-grid-view'];
-            sections.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-
-            const target = document.getElementById(sectionId);
-            if (target) target.style.display = 'block';
-
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            if (navElement) navElement.classList.add('active');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function confirmUserLogout(event) {
-            event.preventDefault(); 
-            Swal.fire({
-                title: 'Ready to leave?', text: "You will be logged out of E-Gallery.", icon: 'question',
-                showCancelButton: true, confirmButtonColor: '#ff4d4d', cancelButtonColor: '#1A1851', confirmButtonText: 'Yes, log me out!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "../../app/controllers/logoutController.php";
-                }
-            });
-        }
-
-        const scrollTopBtn = document.getElementById("scrollTopBtn");
-        window.onscroll = function() {
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                scrollTopBtn.classList.add("show");
-            } else {
-                scrollTopBtn.classList.remove("show");
-            }
-        };
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+    
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

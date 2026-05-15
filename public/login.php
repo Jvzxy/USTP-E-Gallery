@@ -1,177 +1,60 @@
 <?php
 session_start();
-
-// Include database config to fetch dynamic settings
 include_once("../app/config/config.php");
 
-// Clean path relative to where login.php is currently located
-$customLogo = "user/assets/Img/Logo/USTP-Web-Logo.webp";
-$sysNameDisplay = "E-Gallery"; // Fallback system name
+$customLogo     = "user/assets/Img/Logo/USTP-Web-Logo.webp";
+$sysNameDisplay = "E-Gallery";
 
 if (isset($conn)) {
-    // Fetch dynamic logo
-    $logoQuery = "SELECT setting_value FROM `system_settings` WHERE setting_key = 'school_logo' ORDER BY id DESC LIMIT 1";
-    $logoRes = $conn->query($logoQuery);
-    
+    $logoRes = $conn->query("SELECT setting_value FROM system_settings WHERE setting_key = 'school_logo' ORDER BY id DESC LIMIT 1");
     if ($logoRes && $logoRes->num_rows > 0) {
-        $logoRow = $logoRes->fetch_assoc();
-        if (!empty($logoRow['setting_value'])) {
-            $customLogo = $logoRow['setting_value'];
-        }
+        $val = $logoRes->fetch_assoc()['setting_value'];
+        if (!empty($val)) $customLogo = $val;
     }
 
-    // Fetch dynamic system name
-    $sysNameQuery = $conn->query("SELECT setting_value FROM system_settings WHERE setting_key = 'system_name'");
-    if ($sysNameQuery && $sysNameQuery->num_rows > 0) {
-        $row = $sysNameQuery->fetch_assoc();
-        if (!empty($row['setting_value'])) {
-            $sysNameDisplay = $row['setting_value'];
-        }
+    $nameRes = $conn->query("SELECT setting_value FROM system_settings WHERE setting_key = 'system_name'");
+    if ($nameRes && $nameRes->num_rows > 0) {
+        $val = $nameRes->fetch_assoc()['setting_value'];
+        if (!empty($val)) $sysNameDisplay = $val;
     }
 }
-?>
 
+// Capture and clear the error before HTML output
+$loginError = $_SESSION['error'] ?? null;
+unset($_SESSION['error']);
+?>
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo htmlspecialchars($sysNameDisplay); ?> Login</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-    <style>
-        body {
-            background-color: #fcfcfc !important; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .logo-img {
-            max-width: 100% !important;
-            max-height: 130px !important; 
-            width: auto !important;
-            object-fit: contain !important;
-            margin-bottom: 25px !important;
-        }
-
-        .welcome-text {
-            font-weight: 800;
-            color: #000;
-            font-size: 1.4rem;
-            margin-bottom: 8px;
-        }
-
-        .sub-text {
-            color: #999;
-            font-size: 0.85rem;
-            margin-bottom: 30px;
-        }
-
-        .login-card {
-            background: #ffffff;
-            padding: 40px 35px;
-            border-radius: 12px;
-            border: 1px solid #f0f0f0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            text-align: left; 
-        }
-
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: #333;
-            margin-bottom: 6px;
-        }
-
-        .form-control {
-            height: 48px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #555;
-            transition: all 0.2s ease;
-        }
-        
-        .form-control:focus {
-            border-color: #ffb11f;
-            box-shadow: 0 0 0 0.25rem rgba(255, 177, 31, 0.25);
-        }
-
-        .form-control::placeholder {
-            color: #bbb;
-        }
-
-        .form-check-input {
-            cursor: pointer;
-        }
-        .form-check-input:checked {
-            background-color: #ffb11f;
-            border-color: #ffb11f;
-        }
-        .form-check-label {
-            font-size: 0.85rem;
-            color: #777;
-            cursor: pointer;
-            margin-top: 2px;
-        }
-
-        .btn-login {
-            background-color: #ffb11f !important;
-            color: white !important;
-            border-radius: 8px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            height: 50px;
-            transition: background-color 0.2s;
-        }
-
-        .btn-login:hover {
-            background-color: #e69d12 !important;
-        }
-    </style>
+    <title><?php echo htmlspecialchars($sysNameDisplay); ?> | Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/login.css?v=<?php echo time(); ?>">
 </head>
-
 <body>
 
     <div class="login-container">
-        
-        <img src="<?php echo htmlspecialchars($customLogo); ?>?v=<?php echo time(); ?>" alt="<?php echo htmlspecialchars($sysNameDisplay); ?> Logo" class="logo-img">
-        
+
+        <img src="<?php echo htmlspecialchars($customLogo); ?>" alt="<?php echo htmlspecialchars($sysNameDisplay); ?> Logo" class="logo-img">
+
         <h2 class="welcome-text">Welcome back to <?php echo htmlspecialchars($sysNameDisplay); ?></h2>
         <p class="sub-text">Enter your username and password to continue.</p>
 
         <div class="login-card">
             <form id="loginForm" action="../app/controllers/loginController.php" method="POST" autocomplete="on" novalidate>
-                
                 <div class="mb-4">
                     <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
                     <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required autocomplete="username">
                 </div>
-
                 <div class="mb-4">
                     <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
                     <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
                 </div>
-
                 <div class="mb-4 form-check d-flex align-items-center">
                     <input type="checkbox" class="form-check-input me-2" id="rememberMe">
                     <label class="form-check-label" for="rememberMe">Remember me</label>
                 </div>
-
                 <button type="submit" class="btn btn-login w-100 mt-2" name="login">Sign in</button>
             </form>
         </div>
@@ -179,60 +62,54 @@ if (isset($conn)) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const rmCheck = document.getElementById("rememberMe");
+        document.addEventListener("DOMContentLoaded", function () {
             const usernameInput = document.getElementById("username");
+            const rmCheck       = document.getElementById("rememberMe");
 
-            if (localStorage.getItem("rememberedEGalleryUser")) {
-                usernameInput.value = localStorage.getItem("rememberedEGalleryUser");
+            // Restore remembered username
+            const remembered = localStorage.getItem("rememberedEGalleryUser");
+            if (remembered) {
+                usernameInput.value = remembered;
                 rmCheck.checked = true;
             }
 
-            document.getElementById('loginForm').addEventListener('submit', function(event) {
+            document.getElementById("loginForm").addEventListener("submit", function (e) {
                 const username = usernameInput.value.trim();
-                const password = document.getElementById('password').value.trim();
+                const password = document.getElementById("password").value.trim();
 
-                if (username === '' || password === '') {
-                    event.preventDefault(); 
+                if (!username || !password) {
+                    e.preventDefault();
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Missing Information',
-                        text: 'Please enter both your Username and Password.',
-                        confirmButtonColor: '#ffb11f',
-                        customClass: {
-                            popup: 'rounded-4',
-                            confirmButton: 'px-4 py-2 fw-bold rounded-3'
-                        }
+                        icon: "warning",
+                        title: "Missing Information",
+                        text: "Please enter both your Username and Password.",
+                        confirmButtonColor: "#ffb11f",
+                        customClass: { popup: "rounded-4", confirmButton: "px-4 py-2 fw-bold rounded-3" }
                     });
-                    return; 
+                    return;
                 }
 
-                if (rmCheck.checked && username !== '') {
+                // Save or clear remembered username
+                if (rmCheck.checked) {
                     localStorage.setItem("rememberedEGalleryUser", username);
                 } else {
                     localStorage.removeItem("rememberedEGalleryUser");
                 }
             });
+
+            <?php if ($loginError): ?>
+            // Show server-side error after page load (Swal is now guaranteed to be loaded)
+            Swal.fire({
+                icon: "error",
+                title: "Login Failed",
+                text: <?php echo json_encode($loginError); ?>,
+                confirmButtonColor: "#ffb11f",
+                customClass: { popup: "rounded-4", confirmButton: "px-4 py-2 fw-bold rounded-3" }
+            });
+            <?php endif; ?>
         });
     </script>
-
-    <?php if (isset($_SESSION['error'])): ?>
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Login Failed',
-                text: '<?php echo addslashes($_SESSION['error']); ?>',
-                confirmButtonColor: '#ffb11f',
-                customClass: {
-                    popup: 'rounded-4',
-                    confirmButton: 'px-4 py-2 fw-bold rounded-3'
-                }
-            });
-        </script>
-        <?php unset($_SESSION['error']); ?>
-    <?php endif; ?>
 
 </body>
 </html>

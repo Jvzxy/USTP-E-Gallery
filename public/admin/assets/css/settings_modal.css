@@ -1,4 +1,4 @@
-    #settingsModal .modal-content {
+#settingsModal .modal-content {
         border-radius: 12px;
         height: 650px;
         min-height: 650px;
@@ -211,3 +211,119 @@
         background-color: rgba(130, 170, 255, .1);
         color: #82aaff
     }
+
+/* ============================================================
+   RESPONSIVE — TABLET (768px and below)
+   ============================================================ */
+@media (max-width: 768px) {
+    #settingsModal .modal-content {
+        height: auto;
+        min-height: unset;
+        max-height: 92vh;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* Stack sidebar above main content */
+    #settingsModal .modal-content > .d-flex {
+        flex-direction: column !important;
+    }
+
+    #settingsModal .settings-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid var(--bs-border-color);
+        padding: 16px 16px 10px;
+    }
+
+    /* Hide the big "Settings" heading — nav labels are enough */
+    #settingsModal .settings-sidebar > h4 {
+        display: none;
+    }
+
+    /* Turn vertical nav into a horizontally scrollable pill row */
+    #settingsModal .settings-nav {
+        flex-direction: row !important;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        gap: 6px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+    }
+
+    #settingsModal .settings-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    #settingsModal .settings-nav .nav-link {
+        white-space: nowrap;
+        padding: 7px 12px;
+        font-size: 0.78rem;
+        margin-bottom: 0;
+        border-radius: 20px;
+        flex-shrink: 0;
+    }
+
+    /* Keep icon but tighten it */
+    #settingsModal .settings-nav .nav-link i {
+        width: auto;
+        font-size: 0.95rem;
+        margin-right: 4px;
+    }
+
+    #settingsModal .settings-main {
+        padding: 20px 16px;
+        overflow-y: auto;
+        max-height: 65vh;
+    }
+
+    /* Close button stays accessible */
+    #settingsModal .settings-main > .btn-close {
+        top: 12px !important;
+        right: 12px !important;
+    }
+
+    /* Tab content top spacing */
+    #settingsModal .tab-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — PHONE (max-width: 480px)
+   Hide icon text on very small screens to save space
+   ============================================================ */
+@media (max-width: 480px) {
+    /* Show only the icon, hide the label text */
+    #settingsModal .settings-nav .nav-link .nav-label {
+        display: none;
+    }
+
+    #settingsModal .settings-nav .nav-link i {
+        margin-right: 0;
+        font-size: 1.05rem;
+    }
+
+    #settingsModal .settings-nav .nav-link {
+        padding: 8px 10px;
+    }
+
+    #settingsModal .settings-main {
+        padding: 16px 12px;
+    }
+
+    /* Stack the row layouts in tab content */
+    #settingsModal .tab-pane .row > [class*="col-md"] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Shrink the theme-apply-container to stack */
+    #settingsModal .theme-apply-container {
+        flex-direction: column !important;
+        gap: 12px;
+        text-align: center;
+    }
+}

@@ -13,13 +13,9 @@
                         <label class="form-label">Department <span class="text-danger">*</span></label>
                         <select class="form-select" id="modalDeptSelect" onchange="updatePrograms('modalDeptSelect', 'modalProgramSelect')">
                             <option value="" selected>Select Department</option>
-                            <option value="engineering">Engineering</option>
-                            <option value="csis">Computer Science and Information Systems</option>
-                            <option value="technology">Technology</option>
-                            <option value="ls">Life Sciences</option>
-                            <option value="ns">Natural Sciences</option>
-                            <option value="ss">Social Sciences</option>
-                            <option value="ah">Art and Humanities</option>
+                            <?php foreach ($allDepartments as $dept): ?>
+                                <option value="<?php echo $dept['id']; ?>"><?php echo htmlspecialchars($dept['name']); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     

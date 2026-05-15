@@ -9,7 +9,6 @@ if (isset($conn)) {
 }
 ?>
 
-<body>
     <footer class="user-footer py-5">
         <div class="container">
             <div class="row align-items-start">
@@ -36,4 +35,3 @@ if (isset($conn)) {
             </div>
         </div>
     </footer>
-</body>

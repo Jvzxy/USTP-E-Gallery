@@ -63,12 +63,12 @@ if (isset($_POST['login'])) {
 
                         // Temporarily store ID to verify on the next page
                         $_SESSION['pending_2fa_user_id'] = $data['id'];
-                        header("Location: ../../public/verify_2fa.php"); 
+                        header("Location: ../../public/verify_2fa"); 
                         exit();
 
                     } catch (Exception $e) {
                         $_SESSION['error'] = "Could not send 2FA email. Mailer Error: {$mail->ErrorInfo}";
-                        header("Location: ../../public/login.php");
+                        header("Location: ../../public/login");
                         exit();
                     }
                 }
@@ -92,7 +92,7 @@ if (isset($_POST['login'])) {
                         $logStmt->execute();
                         $logStmt->close();
                     }
-                    header("Location: ../../public/admin/index.php");
+                    header("Location: ../../public/admin/index");
                     exit();
                 } else {
                     $visitQuery = "INSERT INTO `user_visits` (`user_id`) VALUES (?)";
@@ -102,23 +102,23 @@ if (isset($_POST['login'])) {
                         $visitStmt->execute();
                         $visitStmt->close();
                     }
-                    header("Location: ../../public/user/index.php");
+                    header("Location: ../../public/user/index");
                     exit();
-                }
+                }                           
 
             } else {
                 $_SESSION['error'] = "Invalid username or password.";
-                header("Location: ../../public/login.php");
+                header("Location: ../../public/login");
                 exit();
             }
         } else {
             $_SESSION['error'] = "Invalid username or password.";
-            header("Location: ../../public/login.php");
+            header("Location: ../../public/login");
             exit();
         }
     } else {
         $_SESSION['error'] = "Database error.";
-        header("Location: ../../public/login.php");
+        header("Location: ../../public/login");
         exit();
     }
 }

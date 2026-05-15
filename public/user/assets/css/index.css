@@ -1,4 +1,4 @@
- /* Global Variables & Layout */
+/* Global Variables & Layout */
         :root {
             --navy-dark: #1A1851;
             --navy-light: #252266;
@@ -64,3 +64,50 @@
         }
         #scrollTopBtn:hover { background-color: #ffb11f; color: var(--navy-dark); transform: translateY(-5px); }
         #scrollTopBtn.show { opacity: 1; visibility: visible; }
+        /* ============================================================
+           GLOBAL RESPONSIVE OVERRIDES
+           ============================================================ */
+
+        /* Container inner padding on small screens */
+        @media (max-width: 767.98px) {
+            .container.py-5 { padding-left: 16px !important; padding-right: 16px !important; }
+            main.container { padding-left: 16px !important; padding-right: 16px !important; }
+        }
+
+        /* 5-column grid: fall back to 2-column on mobile, 3 on tablet */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .col-md-2-4 { flex: 0 0 auto; width: 33.333%; }
+        }
+        @media (max-width: 575.98px) {
+            .col-md-2-4 { flex: 0 0 auto; width: 50%; }
+        }
+
+        /* Scroll-to-top button: bring closer to edge on phones */
+        @media (max-width: 767.98px) {
+            #scrollTopBtn {
+                bottom: 20px;
+                right: 20px;
+                width: 46px;
+                height: 46px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Pagination: smaller on phones */
+        @media (max-width: 575.98px) {
+            .custom-pagination .page-link {
+                width: 30px;
+                height: 30px;
+                font-size: 0.75rem;
+            }
+            .custom-pagination .page-item { margin: 0 2px; }
+        }
+
+        /* Back button: always visible with consistent size */
+        @media (max-width: 575.98px) {
+            .btn-back {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
+            }
+        }

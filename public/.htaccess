@@ -2,9 +2,20 @@ Options -Indexes
 
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.)$ $1.php [L]
+# ---------------------------------------------------------------
+# STEP 1: If someone visits login.php directly, strip the .php
+# and redirect them to the clean URL (301 = permanent redirect)
+# This fires when the browser URL contains .php
+# ---------------------------------------------------------------
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
 
+# ---------------------------------------------------------------
+# STEP 2: Internally serve the .php file for clean URL requests
+# e.g. /login  →  login.php  (invisible to the browser)
+# Only runs if the exact file/folder does not already exist
+# ---------------------------------------------------------------
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.)$ index.phpurl=$1 [QSA,L]
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L,QSA]

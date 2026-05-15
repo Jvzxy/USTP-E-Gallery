@@ -1,7 +1,8 @@
 <?php
 // --- FETCH DYNAMIC DATA FROM DB FOR SETTINGS & UPLOADS ---
 $allDepartments = [];
-$allPrograms = [];
+$allPrograms    = [];
+$allYears       = [];
 $sysSettings = [
     'system_name' => 'USTP E-Gallery',
     'maintenance_mode' => '0',
@@ -41,17 +42,58 @@ if (isset($conn)) {
         }
     }
 
-    // --- NEW: FETCH LOGGED IN ADMIN PROFILE ---
+    // --- REAL SERVER STORAGE (works on localhost AND live servers) ---
+    $diskTotal   = disk_total_space('.');          // bytes — '.' = current drive
+    $diskFree    = disk_free_space('.');
+    $diskUsed    = $diskTotal - $diskFree;
+    $diskPct     = ($diskTotal > 0) ? round(($diskUsed / $diskTotal) * 100, 1) : 0;
+
+    // Human-readable helper
+    function formatBytes($bytes, $decimals = 1) {
+        if ($bytes <= 0) return '0 B';
+        $units = ['B','KB','MB','GB','TB'];
+        $i = (int) floor(log($bytes, 1024));
+        return round($bytes / pow(1024, $i), $decimals) . ' ' . $units[$i];
+    }
+
+    $diskUsedStr  = formatBytes($diskUsed);
+    $diskTotalStr = formatBytes($diskTotal);
+
+    // --- REAL DATABASE SIZE from information_schema ---
+    $dbName   = $conn->query("SELECT DATABASE()")->fetch_row()[0];
+    $dbSizeRes = $conn->query(
+        "SELECT SUM(data_length + index_length) AS size
+         FROM information_schema.TABLES
+         WHERE table_schema = '" . $conn->real_escape_string($dbName) . "'"
+    );
+    $dbSizeBytes = ($dbSizeRes && $row = $dbSizeRes->fetch_assoc()) ? (int)$row['size'] : 0;
+    $dbSizeStr   = formatBytes($dbSizeBytes);
+
+    // --- UPLOADS FOLDER SIZE (scans the public uploads directory) ---
+    $uploadsPath = realpath(__DIR__ . '/../../public/uploads');   // adjust if your path differs
+    $uploadsSizeBytes = 0;
+    if ($uploadsPath && is_dir($uploadsPath)) {
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($uploadsPath, FilesystemIterator::SKIP_DOTS)) as $f) {
+            $uploadsSizeBytes += $f->getSize();
+        }
+    }
+    $uploadsSizeStr = formatBytes($uploadsSizeBytes);
+
+    // --- FETCH LOGGED IN ADMIN PROFILE ---
     $adminProfile = [
         'username' => '',
         'recovery_email' => '',
         'two_factor_enabled' => 0
     ];
     if (isset($_SESSION['user_id'])) {
-        $profileRes = $conn->query("SELECT username, recovery_email, two_factor_enabled FROM user WHERE id = " . $_SESSION['user_id']);
-        if ($profileRes && $profileRes->num_rows > 0) {
-            $adminProfile = $profileRes->fetch_assoc();
+        $profileStmt = $conn->prepare("SELECT username, recovery_email, two_factor_enabled FROM user WHERE id = ?");
+        $profileStmt->bind_param("i", $_SESSION['user_id']);
+        $profileStmt->execute();
+        $profileResult = $profileStmt->get_result();
+        if ($profileResult && $profileResult->num_rows > 0) {
+            $adminProfile = $profileResult->fetch_assoc();
         }
+        $profileStmt->close();
     }
 }
 ?>
@@ -59,7 +101,7 @@ if (isset($conn)) {
 
 
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-fullscreen-sm-down">
         <div class="modal-content border-0 shadow">
             <div class="d-flex h-100 w-100">
 
@@ -67,13 +109,13 @@ if (isset($conn)) {
                     <h4 class="fw-bold mb-4 ms-2">Settings</h4>
 
                     <div class="nav flex-column settings-nav" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button"><i class="bi bi-person-fill"></i> Profile</button>
-                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-theme" type="button"><i class="bi bi-circle-half"></i> Theme</button>
-                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-activity" type="button"><i class="bi bi-clock-history"></i> Activity logs</button>
-                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-general" type="button"><i class="bi bi-gear-fill"></i> General Settings</button>
-                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-data" type="button" id="nav-btn-data"><i class="bi bi-database-fill"></i> Data Management</button>
-                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-storage" type="button"><i class="bi bi-hdd-fill"></i> Storage & Backups</button>
-                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-export" type="button"><i class="bi bi-file-earmark-spreadsheet-fill"></i> Export Data</button>
+                        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button"><i class="bi bi-person-fill"></i> <span class="nav-label">Profile</span></button>
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-theme" type="button"><i class="bi bi-circle-half"></i> <span class="nav-label">Theme</span></button>
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-activity" type="button"><i class="bi bi-clock-history"></i> <span class="nav-label">Activity</span></button>
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-general" type="button"><i class="bi bi-gear-fill"></i> <span class="nav-label">General</span></button>
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-data" type="button" id="nav-btn-data"><i class="bi bi-database-fill"></i> <span class="nav-label">Data</span></button>
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-storage" type="button"><i class="bi bi-hdd-fill"></i> <span class="nav-label">Storage</span></button>
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-export" type="button"><i class="bi bi-file-earmark-spreadsheet-fill"></i> <span class="nav-label">Export</span></button>
                     </div>
                 </div>
 
@@ -303,15 +345,56 @@ if (isset($conn)) {
 
                         <div class="tab-pane fade" id="tab-storage">
                             <h4 class="fw-bold mb-4">Storage & Backups</h4>
-                            <div class="mb-5">
+
+                            <?php
+                            // Colour the bar: green < 60%, yellow < 85%, red >= 85%
+                            $barColor = '#1A1851';
+                            if ($diskPct >= 85) $barColor = '#dc3545';
+                            elseif ($diskPct >= 60) $barColor = '#fd7e14';
+                            ?>
+
+                            <!-- Disk Storage -->
+                            <div class="mb-4">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="fw-bold fs-6">Server Storage</span>
-                                    <span class="fw-bold text-muted fs-6">45GB / 100GB</span>
+                                    <span class="fw-bold fs-6">Disk Storage</span>
+                                    <span class="fw-bold text-muted fs-6">
+                                        <?php echo $diskUsedStr; ?> used / <?php echo $diskTotalStr; ?> total
+                                    </span>
                                 </div>
-                                <div class="progress" style="height: 12px; border-radius: 10px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 45%; background-color: #1A1851;"></div>
+                                <div class="progress mb-1" style="height: 12px; border-radius: 10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: <?php echo $diskPct; ?>%; background-color: <?php echo $barColor; ?>;"
+                                         aria-valuenow="<?php echo $diskPct; ?>" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <small class="text-muted"><?php echo $diskPct; ?>% used</small>
+                            </div>
+
+                            <!-- Quick stats row -->
+                            <div class="row g-3 mb-5">
+                                <div class="col-6 col-md-4">
+                                    <div class="border rounded-3 p-3 bg-body-secondary text-center">
+                                        <i class="bi bi-database fs-4 text-primary d-block mb-1"></i>
+                                        <div class="fw-bold small"><?php echo $dbSizeStr; ?></div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Database Size</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="border rounded-3 p-3 bg-body-secondary text-center">
+                                        <i class="bi bi-images fs-4 text-success d-block mb-1"></i>
+                                        <div class="fw-bold small"><?php echo $uploadsSizeStr; ?></div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Uploads Folder</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="border rounded-3 p-3 bg-body-secondary text-center">
+                                        <i class="bi bi-hdd fs-4 text-warning d-block mb-1"></i>
+                                        <div class="fw-bold small"><?php echo formatBytes($diskFree); ?></div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Free Space Left</div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="border rounded-3 p-4 text-center h-100 bg-body-tertiary">
@@ -428,428 +511,3 @@ if (isset($conn)) {
         </div>
     </div>
 </div>
-
-<script>
-    // --- SETTINGS REOPEN LOGIC ---
-    document.addEventListener("DOMContentLoaded", function() {
-        if (sessionStorage.getItem('reopenSettings')) {
-            let tabToOpen = sessionStorage.getItem('reopenSettings');
-            sessionStorage.removeItem('reopenSettings');
-
-            let modalEl = document.getElementById('settingsModal');
-            if (modalEl) {
-                let modal = new bootstrap.Modal(modalEl);
-                modal.show();
-                setTimeout(() => {
-                    let tabBtn = document.getElementById('nav-btn-' + tabToOpen);
-                    if (tabBtn) tabBtn.click();
-                }, 300);
-            }
-        }
-    });
-
-    let pendingTheme = localStorage.getItem('themeMode') || 'light';
-    let pendingLogoFile = null;
-
-    // --- NEW: ONLY PREVIEWS THE LOGO ON SELECTION ---
-    function previewSchoolLogo(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        pendingLogoFile = file; // Holds the file securely until "Apply" is clicked
-
-        const preview = document.getElementById('logoPreview');
-        const icon = document.getElementById('logoIconPlaceholder');
-        if (icon) icon.style.display = 'none';
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = 'inline-block';
-    }
-
-    // --- NEW: APPLIES THE THEME AND UPLOADS LOGO SIMULTANEOUSLY ---
-    function applySelectedTheme() {
-        // 1. Instantly save and apply the Theme
-        localStorage.setItem('themeMode', pendingTheme);
-        if (typeof applyGlobalTheme === 'function') {
-            applyGlobalTheme(pendingTheme);
-        }
-
-        // 2. Check if an image is waiting to be uploaded
-        if (pendingLogoFile) {
-            let formData = new FormData();
-            formData.append('logo', pendingLogoFile);
-
-            Swal.fire({
-                title: 'Applying Changes...',
-                text: 'Uploading logo and updating theme.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            fetch('../../app/controllers/uploadLogoController.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Changes Applied!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            sessionStorage.setItem('reopenSettings', 'theme');
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', data.message, 'error');
-                    }
-                }).catch(err => {
-                    Swal.fire('Error', 'Failed to upload logo.', 'error');
-                });
-        } else {
-            // No image was selected, just show Theme applied message
-            Swal.fire({
-                icon: 'success',
-                title: 'Theme Applied!',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    }
-
-    // --- DATABASE SETTINGS AJAX LOGIC ---
-    function saveGeneralSettings() {
-        const sysName = document.getElementById('systemNameInput').value.trim();
-        const maintenance = document.getElementById('maintenanceSwitch').checked ? '1' : '0';
-
-        let formData = new FormData();
-        formData.append('system_name', sysName);
-        formData.append('maintenance_mode', maintenance);
-
-        fetch('../../app/controllers/updateSettingsController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                            icon: 'success',
-                            title: 'Settings Saved!',
-                            text: data.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'general');
-                            location.reload();
-                        });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            })
-            .catch(err => {
-                Swal.fire('Error', 'Failed to save settings. Check connection.', 'error');
-            });
-    }
-
-    function selectThemeMode(element, mode) {
-        pendingTheme = mode;
-        const allItems = document.querySelectorAll('.theme-list-group .list-group-item');
-        const allChecks = document.querySelectorAll('.theme-list-group .theme-check');
-
-        allItems.forEach(item => item.classList.remove('active-theme'));
-        allChecks.forEach(check => check.classList.add('d-none'));
-
-        element.classList.add('active-theme');
-        element.querySelector('.theme-check').classList.remove('d-none');
-    }
-
-    function exportStudentData() {
-        const selectedYear = document.getElementById('exportClassYear').value;
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Export Started',
-            text: 'Your CSV file is downloading...',
-            showConfirmButton: false,
-            timer: 1500
-        });
-
-        window.location.href = `../../app/controllers/exportCsvController.php?year=${selectedYear}`;
-    }
-
-    function downloadDatabaseBackup() {
-        Swal.fire({
-            icon: 'info',
-            title: 'Generating Backup',
-            text: 'Bundling your database into an SQL file...',
-            showConfirmButton: false,
-            timer: 2000
-        });
-
-        window.location.href = '../../app/controllers/backupDatabaseController.php';
-    }
-
-    // --- CUSTOM STACKED MODAL CONTROLLERS ---
-    function openStackedModal(modalId) {
-        let modalEl = document.getElementById(modalId);
-        if (modalEl) {
-            let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modal.show();
-        }
-    }
-
-    function closeStackedModal(modalId) {
-        let modalEl = document.getElementById(modalId);
-        if (modalEl) {
-            let modalObj = bootstrap.Modal.getInstance(modalEl);
-            if (modalObj) {
-                modalObj.hide();
-            }
-        }
-    }
-
-    // --- DATA MANAGEMENT AJAX LOGIC ---
-    function submitDepartment() {
-        const name = document.getElementById('ui-dept-name').value.trim();
-        const abbr = document.getElementById('ui-dept-abbr').value.trim();
-
-        if (!name || !abbr) {
-            Swal.fire('Error', 'Both fields are required', 'error');
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('type', 'department');
-        formData.append('name', name);
-        formData.append('abbreviation', abbr);
-
-        fetch('../../app/controllers/addDataController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(response => {
-                if (response.status === 'success') {
-                    closeStackedModal('addDeptModal');
-                    Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'data');
-                            location.reload();
-                        });
-                } else {
-                    Swal.fire('Error', response.message, 'error');
-                }
-            });
-    }
-
-    function submitProgram() {
-        const dept_id = document.getElementById('ui-prog-dept').value;
-        const name = document.getElementById('ui-prog-name').value.trim();
-        const abbr = document.getElementById('ui-prog-abbr').value.trim();
-
-        if (!dept_id || !name || !abbr) {
-            Swal.fire('Error', 'All fields are required', 'error');
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('type', 'program');
-        formData.append('department_id', dept_id);
-        formData.append('name', name);
-        formData.append('abbreviation', abbr);
-
-        fetch('../../app/controllers/addDataController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(response => {
-                if (response.status === 'success') {
-                    closeStackedModal('addProgModal');
-                    Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'data');
-                            location.reload();
-                        });
-                } else {
-                    Swal.fire('Error', response.message, 'error');
-                }
-            });
-    }
-
-    function submitClassYear() {
-        const year = document.getElementById('ui-year-name').value.trim();
-
-        if (!year) {
-            Swal.fire('Error', 'Year is required', 'error');
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('type', 'class_year');
-        formData.append('year', year);
-
-        fetch('../../app/controllers/addDataController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(response => {
-                if (response.status === 'success') {
-                    closeStackedModal('addClassYearModal');
-                    Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        .then(() => {
-                            sessionStorage.setItem('reopenSettings', 'data');
-                            location.reload();
-                        });
-                } else {
-                    Swal.fire('Error', response.message, 'error');
-                }
-            });
-    }
-
-    function deleteItem(type, id, itemName) {
-        Swal.fire({
-            title: `Delete ${itemName}?`,
-            text: "This action cannot be undone.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                let formData = new FormData();
-                formData.append('type', type);
-                formData.append('id', id);
-                formData.append('name', itemName);
-
-                fetch('../../app/controllers/deleteDataController.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(r => r.json())
-                    .then(response => {
-                        if (response.status === 'success') {
-                            sessionStorage.setItem('reopenSettings', 'data');
-                            location.reload();
-                        } else {
-                            Swal.fire('Error', response.message, 'error');
-                        }
-                    });
-            }
-        });
-    }
-
-    // --- SAVE PROFILE SETTINGS AJAX ---
-    function saveProfileSettings() {
-        const username = document.getElementById('profileUsername').value.trim();
-        const email = document.getElementById('profileEmail').value.trim();
-        const password = document.getElementById('profilePassword').value;
-        const confirmPassword = document.getElementById('profileConfirmPassword').value;
-        const twoFactor = document.getElementById('twoFactorSwitch').checked ? '1' : '0';
-
-        if (password !== confirmPassword) {
-            Swal.fire('Error', 'Passwords do not match!', 'error');
-            return;
-        }
-
-        if (twoFactor === '1' && !email) {
-            Swal.fire('Warning', 'You must provide a recovery email to enable 2FA.', 'warning');
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('username', username);
-        formData.append('recovery_email', email);
-        formData.append('password', password);
-        formData.append('two_factor_enabled', twoFactor);
-
-        fetch('../../app/controllers/updateProfileController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Profile Updated!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        sessionStorage.setItem('reopenSettings', 'profile');
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            })
-            .catch(err => Swal.fire('Error', 'Failed to update profile.', 'error'));
-    }
-
-
-    function saveGeneralSettings() {
-        let sysName = document.getElementById('systemNameInput').value;
-        let maintMode = document.getElementById('maintenanceSwitch').checked ? '1' : '0';
-
-        if (!sysName.trim()) {
-            Swal.fire('Hold up!', 'System Name cannot be empty.', 'warning');
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('system_name', sysName);
-        formData.append('maintenance_mode', maintMode);
-
-        Swal.fire({
-            title: 'Saving Settings...',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
-
-        // This path points from your admin folder UP to your controllers folder
-        fetch('../../app/controllers/updateSettingsController.php', { 
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire('Saved!', data.message, 'success').then(() => {
-                    location.reload(); 
-                });
-            } else {
-                Swal.fire('Error', data.message, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Fetch Error:', error);
-            Swal.fire('Error', 'A server error occurred while saving. Check your console!', 'error');
-        });
-    }
-
-</script>

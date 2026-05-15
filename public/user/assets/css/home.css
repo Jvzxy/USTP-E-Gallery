@@ -1,4 +1,4 @@
-    .yearbook-card {
+.yearbook-card {
         position: relative; border-radius: 15px;
         overflow: hidden; height: 320px; background-color: #eee;
     }
@@ -92,3 +92,72 @@
         .carousel-btn-right {
             right: -20px;
         }
+    /* --- RESPONSIVE HOME --- */
+
+    /* Tablet */
+    @media (max-width: 991.98px) {
+        .college-card-item {
+            width: 230px;
+        }
+        .carousel-btn-left { left: -10px; }
+        .carousel-btn-right { right: -10px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 767.98px) {
+        /* Yearbook cards */
+        .yearbook-card {
+            height: 250px;
+        }
+
+        /* Quote carousel: un-fix the absolute controls so they sit below the text */
+        .carousel-controls-container {
+            position: static !important;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0 5px;
+        }
+
+        /* Quote text column: remove min-height, shrink padding */
+        .bg-light-gray {
+            min-height: auto !important;
+            padding: 24px !important;
+        }
+        .bg-light-gray .fs-5.italic {
+            font-size: 1rem !important;
+        }
+
+        /* College scroll: hide side arrows, let native touch scrolling work */
+        .carousel-nav-btn {
+            display: none;
+        }
+        .college-scroll-container {
+            /* keep scrolling, just no arrow buttons */
+            padding: 5px 0 15px;
+        }
+        .college-card-item {
+            width: 210px;
+        }
+
+        /* University Legacy section */
+        .row.bg-light-gray.rounded-4 .col-md-6.p-5 {
+            padding: 24px !important;
+        }
+        .row.bg-light-gray.rounded-4 img {
+            min-height: 220px !important;
+        }
+
+        /* Community CTA section */
+        .row.rounded-4.p-5 {
+            padding: 32px 20px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .yearbook-card {
+            height: 200px;
+        }
+        .college-card-item {
+            width: 180px;
+        }
+    }

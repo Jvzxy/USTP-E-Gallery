@@ -1,0 +1,38 @@
+body { 
+    background-color: #f8f9fa; 
+    height: 100vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    color: #333;
+}
+
+.maintenance-icon {
+    font-size: 5rem;
+    color: #1A1851;
+    margin-bottom: 20px;
+}
+
+h1 { 
+    font-weight: 900; 
+    color: #1A1851; 
+}
+
+.back-btn {
+    background-color: #1A1851;
+    color: white;
+    font-weight: bold;
+    padding: 10px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.2s;
+    display: inline-block;
+    margin-top: 30px;
+}
+
+.back-btn:hover {
+    background-color: #2a2775;
+    color: white;
+}

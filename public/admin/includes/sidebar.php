@@ -1,5 +1,5 @@
 <?php
-$currentPage = basename($_SERVER['PHP_SELF']);
+$currentPage = basename(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
 ?>
 
 <nav class="sidebar d-flex flex-column justify-content-between" id="sidebar">
@@ -27,12 +27,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         
         <ul class="nav flex-column mt-2">
             <li class="nav-item">
-                <a href="index.php" class="nav-link <?php echo ($currentPage == 'index.php') ? 'active' : ''; ?>">
+                <a href="index" class="nav-link <?php echo ($currentPage === 'index' || $currentPage === 'index.php') ? 'active' : ''; ?>">
                     <i class="bi bi-grid-fill me-3"></i> <span class="menu-text">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="upload.php" class="nav-link <?php echo ($currentPage == 'upload.php') ? 'active' : ''; ?>">
+                <a href="upload" class="nav-link <?php echo ($currentPage === 'upload' || $currentPage === 'upload.php') ? 'active' : ''; ?>">
                     <i class="bi bi-box-arrow-up me-3"></i> <span class="menu-text">Uploads</span>
                 </a>
             </li>

@@ -1,14 +1,20 @@
 <?php
 session_start();
-// Changed from db_connection.php to config.php
 require '../../app/config/config.php';
 require '../../app/controllers/communityController.php';
 
 // Check if there is a search term in the URL
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$sortType = isset($_GET['sort']) ? $_GET['sort'] : 'new';
 
-// Fetch REAL posts from the database using the controller
-$posts = getAllPosts($conn, $searchTerm);
+// Fetch REAL posts from the database based on sort type
+if ($sortType === 'popular') {
+    $posts = getPopularPosts($conn, $searchTerm);
+} elseif ($sortType === 'commented') {
+    $posts = getMostDiscussedPosts($conn, $searchTerm);
+} else {
+    $posts = getAllPosts($conn, $searchTerm);
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,141 +26,120 @@ $posts = getAllPosts($conn, $searchTerm);
     <title>E-Gallery | Community Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        :root {
-            --navy-dark: #1b1a40;
-        }
 
-        .bg-navy {
-            background-color: var(--navy-dark);
-        }
-
-        .text-navy {
-            color: var(--navy-dark);
-        }
-
-        body {
-            background-color: #F8F9FA;
-        }
-
-        .post-card {
-            border: 1px solid #EAEAEA;
-            border-radius: 8px;
-            background: white;
-        }
-
-        .search-bar {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            border-radius: 20px;
-        }
-
-        .search-bar::placeholder {
-            color: #ccc;
-        }
-
-        /* Updated Create Post Button Styles */
-        .create-post-trigger {
-            border: 1px solid #EAEAEA;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            color: black;
-            font-weight: bold;
-            transition: all 0.2s ease-in-out;
-            user-select: none;
-            /* Prevents text from turning blue when clicked */
-        }
-
-        .create-post-trigger:hover {
-            background-color: #e9ecef;
-            /* Smooth gray hover background */
-            border-color: #ccc;
-            color: var(--navy-dark);
-        }
-
-        /* Fix the white background when clicking the search bar */
-        .search-bar:focus,
-        .search-bar:hover {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-            box-shadow: none !important;
-            border-color: rgba(255, 255, 255, 0.5) !important;
-        }
-
-        /* Hide the default, ugly browser 'X' clear button */
-        input[type="search"]::-webkit-search-cancel-button {
-            -webkit-appearance: none;
-            appearance: none;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/community.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg bg-navy py-3 px-4 shadow-sm">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
+    <nav class="navbar navbar-expand-lg bg-navy py-3 px-3 px-md-4 shadow-sm">
+        <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center gap-3">
             <h5 class="text-white fw-bold mb-0">USTP-E-Gallery Community Hub</h5>
 
-            <form action="community.php" method="GET" class="d-flex w-25">
-                <div class="position-relative w-100">
+            <div class="d-flex align-items-center gap-2 flex-grow-1 flex-md-grow-0 justify-content-end">
+                <form action="community" method="GET" class="d-flex w-100" style="max-width: 300px;">
+                    <div class="position-relative w-100">
+                        <button type="submit" class="border-0 bg-transparent text-white" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 10; outline: none; box-shadow: none; cursor: pointer;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <input name="search" value="<?php echo htmlspecialchars($searchTerm); ?>" class="form-control search-bar ps-5 pe-5 py-1 text-white w-100" type="search" placeholder="Search for titles..." style="border-radius: 20px !important; outline: none;">
+                        <?php if (!empty($searchTerm)): ?>
+                            <a href="community" class="text-white" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); z-index: 10; text-decoration: none; cursor: pointer;">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
 
-                    <button type="submit" class="border-0 bg-transparent text-white" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 10; outline: none; box-shadow: none; cursor: pointer;">
-                        <i class="bi bi-search"></i>
-                    </button>
-
-                    <input name="search" value="<?php echo htmlspecialchars($searchTerm); ?>" class="form-control search-bar ps-5 pe-5 py-1 text-white w-100" type="search" placeholder="Search for titles..." style="border-radius: 20px !important; outline: none;">
-
-                    <?php if (!empty($searchTerm)): ?>
-                        <a href="community.php" class="text-white" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); z-index: 10; text-decoration: none; cursor: pointer;">
-                            <i class="bi bi-x-circle-fill"></i>
-                        </a>
-                    <?php endif; ?>
-
-                </div>
-            </form>
-
+                <button id="darkModeToggle" class="dark-mode-toggle" title="Toggle dark mode">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <div class="container-fluid px-5 py-4">
-        <div class="row">
-            <div class="col-md-2 pt-3">
-                <a href="index.php" class="d-block text-dark text-decoration-none fw-bold mb-3"><i class="bi bi-house-door me-2"></i> Home</a>
+    <div class="container-fluid px-3 px-md-5 py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-2 pt-3 mb-4 mb-lg-0">
+                <a href="index" class="d-block text-decoration-none fw-bold mb-3" style="color: var(--text-dark);"><i class="bi bi-house-door me-2"></i> Home</a>
             </div>
 
-            <div class="col-md-8 px-5">
-                <div class="create-post-trigger w-100 py-2 px-4 mb-4 text-center" data-bs-toggle="modal" data-bs-target="#createPostModal">
-                    Create Post
+            <div class="col-12 col-lg-8 px-2 px-md-4">
+                <div class="create-post-trigger w-100 py-3 px-3 px-md-4 mb-4 text-center" data-bs-toggle="modal" data-bs-target="#createPostModal">
+                    <i class="bi bi-plus-circle me-2"></i> Create Post
                 </div>
 
                 <?php if (!empty($searchTerm)): ?>
-                    <div class="d-flex align-items-center justify-content-between bg-white p-3 mb-4 rounded border">
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between bg-white p-3 mb-4 rounded border gap-3">
                         <span class="text-muted">Showing results for: <strong>"<?php echo htmlspecialchars($searchTerm); ?>"</strong></span>
-                        <a href="community.php" class="btn btn-sm text-white fw-bold px-3 rounded-pill" style="background-color: var(--navy-dark);">
+                        <a href="community" class="btn btn-sm text-white fw-bold px-3 rounded-pill" style="background-color: var(--navy-dark);">
                             <i class="bi bi-arrow-left me-1"></i> Go back to Main Hub
                         </a>
                     </div>
                 <?php endif; ?>
 
+                <div class="sort-section">
+                    <a href="?sort=new<?php echo $searchTerm ? '&search=' . htmlspecialchars($searchTerm) : ''; ?>" class="sort-btn <?php echo $sortType === 'new' ? 'active' : ''; ?>">
+                        <i class="bi bi-fire me-1"></i> Latest
+                    </a>
+                    <a href="?sort=popular<?php echo $searchTerm ? '&search=' . htmlspecialchars($searchTerm) : ''; ?>" class="sort-btn <?php echo $sortType === 'popular' ? 'active' : ''; ?>">
+                        <i class="bi bi-trending-up me-1"></i> Popular
+                    </a>
+                    <a href="?sort=commented<?php echo $searchTerm ? '&search=' . htmlspecialchars($searchTerm) : ''; ?>" class="sort-btn <?php echo $sortType === 'commented' ? 'active' : ''; ?>">
+                        <i class="bi bi-chat-dots me-1"></i> Most Discussed
+                    </a>
+                </div>
+
                 <?php if (empty($posts)): ?>
                     <p class="text-center text-muted mt-5">No posts found. Be the first to create one!</p>
                 <?php else: ?>
-                    <?php foreach ($posts as $post): ?>
-                        <div class="post-card p-4 mb-4">
-                            <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <span class="fw-bold fs-6"><?php echo htmlspecialchars($post['username']); ?></span>
-                                <small class="text-muted"><?php echo timeAgo($post['created_at']); ?></small>
+                    <?php foreach ($posts as $post): 
+                        $postCommentCount = countPostComments($conn, $post['id']);
+                        $postLikeCount = countPostLikes($conn, $post['id']);
+                        $userLiked = isset($_SESSION['user_id']) ? hasUserLikedPost($conn, $post['id'], $_SESSION['user_id']) : false;
+                    ?>
+                        <div class="post-card p-3 p-md-4 mb-3" onclick="window.location.href='post?id=<?php echo $post['id']; ?>';">
+                            <div class="mb-3 d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="fw-bold" style="color: var(--text-dark);"><?php echo htmlspecialchars($post['username']); ?></span>
+                                    <span class="d-block d-sm-inline mt-1 mt-sm-0 ms-sm-2" style="font-size: 0.85rem; color: var(--text-muted);">
+                                        <i class="bi bi-clock me-1"></i><?php echo timeAgo($post['created_at']); ?>
+                                    </span>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn-icon text-secondary border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation();" title="Post options">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <?php if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $post['user_id']): ?>
+                                            <li>
+                                                <form action="../../app/controllers/communityController.php" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                                    <input type="hidden" name="action" value="delete_post">
+                                                    <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                                                    <button type="submit" class="dropdown-item text-danger" onclick="event.stopPropagation();">
+                                                        <i class="bi bi-trash me-2"></i>Delete Post
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </div>
                             </div>
 
-                            <h4 class="fw-bold mb-3"><?php echo htmlspecialchars($post['title']); ?></h4>
-                            <p class="mb-5" style="color: #333;"><?php echo nl2br(htmlspecialchars($post['body'])); ?></p>
+                            <h4 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h4>
+                            <p class="mb-3" style="color: var(--text-muted);"><?php echo substr(htmlspecialchars($post['body']), 0, 150); ?>...</p>
 
-                            <div class="d-flex gap-3">
-                                <a href="post.php?id=<?php echo $post['id']; ?>" class="text-dark text-decoration-none fw-bold">
-                                    <i class="bi bi-chat me-1"></i> comment
+                            <div class="post-engagement">
+                                <a href="post?id=<?php echo $post['id']; ?>" class="engagement-btn text-decoration-none" onclick="event.stopPropagation();">
+                                    <i class="bi bi-chat"></i> <span><?php echo $postCommentCount; ?> Comments</span>
                                 </a>
+                                <button class="engagement-btn <?php echo $userLiked ? 'active' : ''; ?>" onclick="event.stopPropagation(); toggleLike(this, <?php echo $post['id']; ?>)" title="Like this post" data-post-id="<?php echo $post['id']; ?>">
+                                    <i class="bi <?php echo $userLiked ? 'bi-heart-fill' : 'bi-heart'; ?>"></i> 
+                                    <span class="like-count"><?php echo $postLikeCount; ?></span>
+                                </button>
+                                <button class="engagement-btn" onclick="event.stopPropagation(); sharePost(<?php echo $post['id']; ?>)" title="Share this post">
+                                    <i class="bi bi-share"></i> <span>Share</span>
+                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -176,12 +161,12 @@ $posts = getAllPosts($conn, $searchTerm);
 
                         <div class="mb-3">
                             <label class="form-label text-dark">Title:</label>
-                            <input type="text" name="title" class="form-control rounded-1 border" required>
+                            <input type="text" name="title" class="form-control rounded-1 border" placeholder="Enter post title..." required>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label text-dark">Main topic:</label>
-                            <textarea name="body" class="form-control rounded-1 border" rows="6" required></textarea>
+                            <textarea name="body" class="form-control rounded-1 border" rows="6" placeholder="Enter post content..." required></textarea>
                         </div>
 
                         <div class="d-flex justify-content-end">
@@ -194,6 +179,9 @@ $posts = getAllPosts($conn, $searchTerm);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="assets/js/darkmode.js"></script>
+    <script src="assets/js/community.js"></script>
 </body>
 
 </html>

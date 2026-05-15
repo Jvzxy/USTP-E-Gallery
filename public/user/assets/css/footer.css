@@ -1,4 +1,4 @@
-    .user-footer {
+.user-footer {
         background-color: var(--navy-dark);
         color: white; width: 100%; margin-top: auto;
     }
@@ -20,3 +20,13 @@
         margin-top: 5px; letter-spacing: 0.5px; text-transform: uppercase;
     }
     .linkedin-icon:hover { color: #0a66c2; transform: none !important; box-shadow: none !important; }
+    /* --- RESPONSIVE FOOTER --- */
+    @media (max-width: 767.98px) {
+        .user-footer .container { padding: 0 20px; }
+        .user-footer .row { text-align: center; }
+        .footer-text { max-width: 100%; margin: 0 auto; }
+        /* Center the LinkedIn icon on mobile */
+        .user-footer .d-flex.flex-column.align-items-start {
+            align-items: center !important;
+        }
+    }

@@ -1,4 +1,4 @@
-     .program-modal-content {
+.program-modal-content {
          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
          border-radius: 20px;
          border: none;
@@ -23,4 +23,20 @@
      .program-btn:hover {
          transform: scale(1.03);
          filter: brightness(1.1);
+     }
+     /* --- RESPONSIVE MODALS --- */
+     @media (max-width: 575.98px) {
+         .program-modal-content {
+             border-radius: 12px;
+             margin: 0 8px;
+         }
+         .program-btn {
+             padding: 12px;
+             font-size: 0.85rem;
+         }
+         /* Make both columns full-width on phones */
+         .modal-body .row > .col-md-6 {
+             flex: 0 0 100% !important;
+             max-width: 100% !important;
+         }
      }

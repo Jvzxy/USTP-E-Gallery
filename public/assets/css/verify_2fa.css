@@ -1,0 +1,39 @@
+body { 
+    background-color: #f8f9fa; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100vh; 
+}
+
+.verify-card { 
+    max-width: 400px; 
+    width: 100%; 
+    border-radius: 12px; 
+    border: none; 
+}
+
+.code-input { 
+    letter-spacing: 8px; 
+    font-size: 1.5rem; 
+    text-align: center; 
+    border: 2px solid #e2e8f0; 
+    font-weight: bold; 
+}
+
+.code-input:focus { 
+    border-color: #1A1851; 
+    box-shadow: none; 
+}
+
+.btn-navy { 
+    background-color: #1A1851; 
+    color: white; 
+    font-weight: 800; 
+    border: none; 
+}
+
+.btn-navy:hover { 
+    background-color: #2a2775; 
+    color: white; 
+}
