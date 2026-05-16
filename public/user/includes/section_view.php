@@ -18,5 +18,5 @@
                 </ul>
         </nav>
     </div>
-<script src="assets/js/section_view.js"></script>
+<script src="assets/js/section_view.js?v=<?php echo time(); ?>"></script>
 </section>

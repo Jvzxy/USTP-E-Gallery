@@ -32,11 +32,15 @@ window.renderSections = function (programName) {
             sectionCurrentPage = 1;
             sectionTotalItems  = [];
 
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 grid.innerHTML = '<div class="text-center w-100 py-5 text-muted fw-bold">No sections available for this program yet.</div>';
                 document.getElementById('section-pagination').innerHTML = '';
                 return;
             }
+
+            // 👇 THE REAL MAGIC LINE 👇
+            // This sorts the objects by targeting their '.name' property numerically
+            data.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
             data.forEach(sec => {
                 sectionTotalItems.push(`

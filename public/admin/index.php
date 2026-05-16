@@ -13,7 +13,7 @@ if (file_exists($db_path)) {
 
         $query = "SELECT username FROM `user` WHERE id = ?";
         if ($stmt = $conn->prepare($query)) {
-            $stmt->bind_param("i", $admin_id); 
+            $stmt->bind_param("i", $admin_id);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -26,20 +26,20 @@ if (file_exists($db_path)) {
         // FETCH RECENT USERS DIRECTLY FROM DB 
         $recentUsersQuery = "SELECT `username`, `role`, `dateCreated` FROM `user` ORDER BY `dateCreated` DESC LIMIT 5";
         $recentUsersResult = $conn->query($recentUsersQuery);
-        
+
         $allUsersQuery = "SELECT `username`, `role`, `dateCreated` FROM `user` ORDER BY `dateCreated` DESC LIMIT 50";
         $allUsersResult = $conn->query($allUsersQuery);
 
         // --- NEW: FETCH RECENT UPLOADED PHOTOS (WITH SORTING & ID) ---
         $sortOrder = (isset($_GET['sort']) && $_GET['sort'] === 'oldest') ? 'ASC' : 'DESC';
-        
+
         $recentPhotosQuery = "
             SELECT sp.id, sp.full_name, d.name as dept_name, p.name as prog_name, s.name as sec_name, sp.latin_honor, sp.class_year, sp.photo_path, sp.uploaded_at
             FROM student_profiles sp
             LEFT JOIN departments d ON sp.department_id = d.id
             LEFT JOIN programs p ON sp.program_id = p.id
             LEFT JOIN sections s ON sp.section_id = s.id
-            ORDER BY sp.uploaded_at $sortOrder LIMIT 5
+            ORDER BY sp.uploaded_at $sortOrder LIMIT 100
         ";
         $recentPhotosResult = $conn->query($recentPhotosQuery);
 
@@ -83,14 +83,302 @@ if (file_exists($db_path)) {
     <link rel="stylesheet" href="assets/css/settings_modal.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/upload_photo.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/upload_user.css?v=<?php echo time(); ?>">
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* MINIFIED CSS TO SAVE SPACE */
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;overflow-x:hidden;transition:background-color .3s,color .3s}.content-area{margin-left:240px;width:calc(100% - 240px);min-height:100vh;background-color:var(--bs-body-bg)}.sidebar{width:240px;height:100vh;background-color:#1A1851;color:#fff;position:fixed;z-index:1000;transition:width .3s cubic-bezier(.25,.8,.25,1),transform .3s ease;overflow-x:hidden}.sidebar-header{display:flex;align-items:center;padding:15px;height:70px}.menu-toggle-btn{background:0 0;border:none;color:#a0a0c0;width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.2s;cursor:pointer;flex-shrink:0}.menu-toggle-btn:hover{background-color:rgba(255,255,255,.1);color:#fff}.sidebar-logo{font-size:1.3rem;font-weight:700;margin-left:10px}.sidebar .nav-link{color:#a0a0c0;padding:12px 20px;transition:.3s;text-decoration:none;display:flex;align-items:center;white-space:nowrap}.sidebar .nav-link i{font-size:1.2rem;width:25px;text-align:center}.sidebar .nav-link.active,.sidebar .nav-link:hover{color:#fff;background:rgba(255,255,255,.1)}.dashboard-card,.photo-upload-card,.user-table-wrapper{background-color:var(--bs-body-bg);border:1px solid var(--bs-border-color);border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.03);padding:25px}.btn-navy{background-color:#1A1851!important;color:#fff!important;font-weight:800;border:none;border-radius:6px;padding:8px 24px;transition:.3s}.btn-navy:hover{background-color:#2a2775!important;color:#fff!important;opacity:1!important}.btn-tab{border:1px solid #1A1851!important;color:#1A1851!important;background-color:transparent!important;border-radius:4px;padding:6px 16px;font-weight:700;font-size:.85rem}.active-toggle{background-color:#1A1851!important;color:#fff!important;border-color:#1A1851!important}.btn-upload-left{background-color:#1A1851!important;color:#fff!important;font-weight:700;border:none;border-radius:4px;padding:6px 16px;font-size:.85rem;margin-top:10px;display:inline-flex;align-items:center;justify-content:center}.welcome-text{color:#6c757d;font-size:1.1rem;margin-bottom:30px}.welcome-name{color:#1A1851;font-weight:800}.dashboard-table-head{border-bottom:2px solid var(--bs-heading-color)}.dashboard-table-head th{border:none!important;padding-bottom:12px}
-        [data-bs-theme=dark] .content-area,[data-bs-theme=dark] body{background-color:#121212!important;color:#e0e0e0!important}[data-bs-theme=dark] .bg-body-secondary,[data-bs-theme=dark] .bg-body-tertiary,[data-bs-theme=dark] .bg-light{background-color:#2c2c2c!important;color:#e0e0e0!important;border-color:#444!important}[data-bs-theme=dark] .dashboard-card,[data-bs-theme=dark] .modal-content,[data-bs-theme=dark] .photo-upload-card,[data-bs-theme=dark] .settings-main,[data-bs-theme=dark] .settings-sidebar,[data-bs-theme=dark] .user-table-wrapper{background-color:#1e1e1e!important;border-color:#333!important;color:#e0e0e0!important;box-shadow:none!important}[data-bs-theme=dark] .form-control,[data-bs-theme=dark] .form-select,[data-bs-theme=dark] textarea{background-color:#2c2c2c!important;color:#fff!important;border-color:#444!important}[data-bs-theme=dark] .btn-navy,[data-bs-theme=dark] .btn-upload-left{background-color:#82aaff!important;color:#121212!important}[data-bs-theme=dark] .btn-navy:hover{background-color:#a0c2ff!important;color:#121212!important;opacity:1!important}[data-bs-theme=dark] .btn-tab{border-color:#82aaff!important;color:#82aaff!important;background-color:transparent!important}[data-bs-theme=dark] .active-toggle{background-color:#82aaff!important;color:#121212!important;border-color:#82aaff!important}[data-bs-theme=dark] .text-dark{color:#e0e0e0!important}[data-bs-theme=dark] .form-label,[data-bs-theme=dark] h1,[data-bs-theme=dark] h2,[data-bs-theme=dark] h3,[data-bs-theme=dark] h4,[data-bs-theme=dark] h5,[data-bs-theme=dark] h6{color:#fff!important}[data-bs-theme=dark] .welcome-name{color:#82aaff!important}[data-bs-theme=dark] .dashboard-table-head{border-bottom:2px solid #555!important}[data-bs-theme=dark] .upload-icon-wrapper{background-color:#2c2c2c!important}[data-bs-theme=dark] .upload-icon-wrapper i{color:#82aaff!important}[data-bs-theme=dark] .btn-close{filter:invert(1) grayscale(100%) brightness(200%)}
-        @media (min-width:769px){body.sidebar-collapsed .sidebar{width:75px}body.sidebar-collapsed .content-area{margin-left:75px;width:calc(100% - 75px)}body.sidebar-collapsed .sidebar .menu-text,body.sidebar-collapsed .sidebar .sidebar-logo{display:none}}@media (max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.mobile-open{transform:translateX(0)}.content-area{margin-left:0;width:100%;padding:20px!important}}.mobile-toggle-btn{background-color:var(--bs-body-bg);border:1px solid var(--bs-border-color);color:var(--bs-body-color);width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            transition: background-color .3s, color .3s
+        }
+
+        .content-area {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            min-height: 100vh;
+            background-color: var(--bs-body-bg)
+        }
+
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background-color: #1A1851;
+            color: #fff;
+            position: fixed;
+            z-index: 1000;
+            transition: width .3s cubic-bezier(.25, .8, .25, 1), transform .3s ease;
+            overflow-x: hidden
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            height: 70px
+        }
+
+        .menu-toggle-btn {
+            background: 0 0;
+            border: none;
+            color: #a0a0c0;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .2s;
+            cursor: pointer;
+            flex-shrink: 0
+        }
+
+        .menu-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, .1);
+            color: #fff
+        }
+
+        .sidebar-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-left: 10px
+        }
+
+        .sidebar .nav-link {
+            color: #a0a0c0;
+            padding: 12px 20px;
+            transition: .3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            white-space: nowrap
+        }
+
+        .sidebar .nav-link i {
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center
+        }
+
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .1)
+        }
+
+        .dashboard-card,
+        .photo-upload-card,
+        .user-table-wrapper {
+            background-color: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .03);
+            padding: 25px
+        }
+
+        .btn-navy {
+            background-color: #1A1851 !important;
+            color: #fff !important;
+            font-weight: 800;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 24px;
+            transition: .3s
+        }
+
+        .btn-navy:hover {
+            background-color: #2a2775 !important;
+            color: #fff !important;
+            opacity: 1 !important
+        }
+
+        .btn-tab {
+            border: 1px solid #1A1851 !important;
+            color: #1A1851 !important;
+            background-color: transparent !important;
+            border-radius: 4px;
+            padding: 6px 16px;
+            font-weight: 700;
+            font-size: .85rem
+        }
+
+        .active-toggle {
+            background-color: #1A1851 !important;
+            color: #fff !important;
+            border-color: #1A1851 !important
+        }
+
+        .btn-upload-left {
+            background-color: #1A1851 !important;
+            color: #fff !important;
+            font-weight: 700;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 16px;
+            font-size: .85rem;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .welcome-text {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 30px
+        }
+
+        .welcome-name {
+            color: #1A1851;
+            font-weight: 800
+        }
+
+        .dashboard-table-head {
+            border-bottom: 2px solid var(--bs-heading-color)
+        }
+
+        .dashboard-table-head th {
+            border: none !important;
+            padding-bottom: 12px
+        }
+
+        [data-bs-theme=dark] .content-area,
+        [data-bs-theme=dark] body {
+            background-color: #121212 !important;
+            color: #e0e0e0 !important
+        }
+
+        [data-bs-theme=dark] .bg-body-secondary,
+        [data-bs-theme=dark] .bg-body-tertiary,
+        [data-bs-theme=dark] .bg-light {
+            background-color: #2c2c2c !important;
+            color: #e0e0e0 !important;
+            border-color: #444 !important
+        }
+
+        [data-bs-theme=dark] .dashboard-card,
+        [data-bs-theme=dark] .modal-content,
+        [data-bs-theme=dark] .photo-upload-card,
+        [data-bs-theme=dark] .settings-main,
+        [data-bs-theme=dark] .settings-sidebar,
+        [data-bs-theme=dark] .user-table-wrapper {
+            background-color: #1e1e1e !important;
+            border-color: #333 !important;
+            color: #e0e0e0 !important;
+            box-shadow: none !important
+        }
+
+        [data-bs-theme=dark] .form-control,
+        [data-bs-theme=dark] .form-select,
+        [data-bs-theme=dark] textarea {
+            background-color: #2c2c2c !important;
+            color: #fff !important;
+            border-color: #444 !important
+        }
+
+        [data-bs-theme=dark] .btn-navy,
+        [data-bs-theme=dark] .btn-upload-left {
+            background-color: #82aaff !important;
+            color: #121212 !important
+        }
+
+        [data-bs-theme=dark] .btn-navy:hover {
+            background-color: #a0c2ff !important;
+            color: #121212 !important;
+            opacity: 1 !important
+        }
+
+        [data-bs-theme=dark] .btn-tab {
+            border-color: #82aaff !important;
+            color: #82aaff !important;
+            background-color: transparent !important
+        }
+
+        [data-bs-theme=dark] .active-toggle {
+            background-color: #82aaff !important;
+            color: #121212 !important;
+            border-color: #82aaff !important
+        }
+
+        [data-bs-theme=dark] .text-dark {
+            color: #e0e0e0 !important
+        }
+
+        [data-bs-theme=dark] .form-label,
+        [data-bs-theme=dark] h1,
+        [data-bs-theme=dark] h2,
+        [data-bs-theme=dark] h3,
+        [data-bs-theme=dark] h4,
+        [data-bs-theme=dark] h5,
+        [data-bs-theme=dark] h6 {
+            color: #fff !important
+        }
+
+        [data-bs-theme=dark] .welcome-name {
+            color: #82aaff !important
+        }
+
+        [data-bs-theme=dark] .dashboard-table-head {
+            border-bottom: 2px solid #555 !important
+        }
+
+        [data-bs-theme=dark] .upload-icon-wrapper {
+            background-color: #2c2c2c !important
+        }
+
+        [data-bs-theme=dark] .upload-icon-wrapper i {
+            color: #82aaff !important
+        }
+
+        [data-bs-theme=dark] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%)
+        }
+
+        @media (min-width:769px) {
+            body.sidebar-collapsed .sidebar {
+                width: 75px
+            }
+
+            body.sidebar-collapsed .content-area {
+                margin-left: 75px;
+                width: calc(100% - 75px)
+            }
+
+            body.sidebar-collapsed .sidebar .menu-text,
+            body.sidebar-collapsed .sidebar .sidebar-logo {
+                display: none
+            }
+        }
+
+        @media (max-width:768px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0)
+            }
+
+            .content-area {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px !important
+            }
+        }
+
+        .mobile-toggle-btn {
+            background-color: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            color: var(--bs-body-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
     </style>
 </head>
 
@@ -100,7 +388,7 @@ if (file_exists($db_path)) {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = mode === 'dark' || (mode === 'system' && prefersDark);
             document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
-            
+
             if (typeof window.visitsChart !== 'undefined') {
                 window.visitsChart.data.datasets[0].backgroundColor = isDark ? '#82aaff' : '#1A1851';
                 window.visitsChart.options.scales.x.ticks.color = isDark ? '#a0a0c0' : '#6c757d';
@@ -165,7 +453,7 @@ if (file_exists($db_path)) {
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold m-0 text-dark" style="font-size: 0.8rem;">Students Every Class Year</h6>
                             <select class="form-select form-select-sm w-auto fw-bold py-1" style="font-size: 0.75rem;" onchange="updateYearCount(this.value)">
-                                <?php 
+                                <?php
                                 if (isset($yearsResult) && $yearsResult->num_rows > 0) {
                                     while ($yearRow = $yearsResult->fetch_assoc()) {
                                         $y = $yearRow['year'];
@@ -208,10 +496,10 @@ if (file_exists($db_path)) {
                                 if (isset($recentUsersResult) && $recentUsersResult->num_rows > 0) {
                                     while ($userRow = $recentUsersResult->fetch_assoc()) {
                                         $dateAdded = date("n-j-Y", strtotime($userRow['dateCreated']));
-                                        $roleBadge = $userRow['role'] === 'admin' 
-                                            ? '<span class="badge bg-danger">Admin</span>' 
+                                        $roleBadge = $userRow['role'] === 'admin'
+                                            ? '<span class="badge bg-danger">Admin</span>'
                                             : '<span class="badge bg-primary">Student</span>';
-                                            
+
                                         echo "<tr>";
                                         echo "<td class='fw-bold pt-3 text-dark' style='font-size: 0.85rem;'>" . htmlspecialchars($userRow['username']) . "</td>";
                                         echo "<td class='pt-3'>" . $roleBadge . "</td>";
@@ -231,7 +519,7 @@ if (file_exists($db_path)) {
             <div class="dashboard-card mt-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h6 class="fw-bold m-0 fs-5 text-dark">New add photo in gallery</h6>
-                    
+
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary btn-sm fw-bold px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="bi bi-funnel"></i> Filter
@@ -243,36 +531,37 @@ if (file_exists($db_path)) {
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                     <table class="table table-borderless align-middle m-0" id="dashboardStudentTable">
                         <thead class="dashboard-table-head">
                             <tr>
-                                <th class="fw-bold text-dark">Name</th>
-                                <th class="fw-bold text-dark">Department</th>
-                                <th class="fw-bold text-dark">Program</th>
-                                <th class="fw-bold text-dark">Section</th>
-                                <th class="fw-bold text-dark">Latin Honor</th>
-                                <th class="fw-bold text-dark">Class year</th>
-                                <th class="fw-bold text-dark">Date</th>
-                                <th></th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Name</th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Department</th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Program</th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Section</th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Latin Honor</th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Class year</th>
+                                <th class="fw-bold text-body" style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);">Date</th>
+                                <th style="position: sticky; top: 0; z-index: 10; background-color: var(--bs-body-bg);"></th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <?php
                             if (isset($recentPhotosResult) && $recentPhotosResult->num_rows > 0) {
                                 while ($photoRow = $recentPhotosResult->fetch_assoc()) {
                                     // Make sure we have the ID to pass to JS
-                                    $studentId = $photoRow['id']; 
+                                    $studentId = $photoRow['id'];
                                     $jsSafeName = addslashes(htmlspecialchars($photoRow['full_name']));
                                     // Create a safe string for Latin Honors for the JS function
                                     $jsSafeLatin = addslashes(htmlspecialchars($photoRow['latin_honor'] ?? 'None'));
 
                                     $dateUploaded = date("m-d-Y", strtotime($photoRow['uploaded_at']));
                                     $imgSrc = $photoRow['photo_path'];
-                                    
-                                    $latin = !empty($photoRow['latin_honor']) && $photoRow['latin_honor'] !== 'None' 
-                                             ? htmlspecialchars($photoRow['latin_honor']) 
-                                             : '<span class="text-muted">None</span>';
+
+                                    $latin = !empty($photoRow['latin_honor']) && $photoRow['latin_honor'] !== 'None'
+                                        ? htmlspecialchars($photoRow['latin_honor'])
+                                        : '<span class="text-muted">None</span>';
 
                                     echo "<tr>";
                                     echo "<td class='py-3'>";
@@ -287,7 +576,7 @@ if (file_exists($db_path)) {
                                     echo "<td class='fw-bold text-dark' style='font-size: 0.8rem;'>" . $latin . "</td>";
                                     echo "<td class='fw-bold text-dark' style='font-size: 0.8rem;'>" . htmlspecialchars($photoRow['class_year']) . "</td>";
                                     echo "<td class='fw-bold text-dark' style='font-size: 0.8rem;'>" . $dateUploaded . "</td>";
-                                    
+
                                     // 3 DOTS MENU 
                                     echo "<td class='text-end'>
                                             <div class='dropdown'>
@@ -337,10 +626,10 @@ if (file_exists($db_path)) {
                                 if (isset($allUsersResult) && $allUsersResult->num_rows > 0) {
                                     while ($allUserRow = $allUsersResult->fetch_assoc()) {
                                         $dateAddedAll = date("M j, Y, g:i A", strtotime($allUserRow['dateCreated']));
-                                        $roleBadge = $allUserRow['role'] === 'admin' 
-                                            ? '<span class="badge bg-danger">Admin</span>' 
+                                        $roleBadge = $allUserRow['role'] === 'admin'
+                                            ? '<span class="badge bg-danger">Admin</span>'
                                             : '<span class="badge bg-primary">Student</span>';
-                                        
+
                                         echo "<tr>";
                                         echo "<td class='fw-bold text-dark'>" . htmlspecialchars($allUserRow['username']) . "</td>";
                                         echo "<td>" . $roleBadge . "</td>";
@@ -368,12 +657,12 @@ if (file_exists($db_path)) {
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editStudentId">
-                    
+
                     <div class="mb-3">
                         <label class="form-label fw-bold text-dark">Full Name</label>
                         <input type="text" class="form-control" id="editStudentName">
                     </div>
-                    
+
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark">Latin Honor</label>
                         <select class="form-select" id="editStudentLatin">
@@ -399,4 +688,5 @@ if (file_exists($db_path)) {
     <script src="assets/js/dashboard.js?v=<?php echo time(); ?>"></script>
     <script src="assets/js/settings.js?v=<?php echo time(); ?>"></script>
 </body>
+
 </html>

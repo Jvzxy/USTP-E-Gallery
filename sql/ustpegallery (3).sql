@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 12, 2026 at 12:26 AM
+-- Generation Time: May 16, 2026 at 03:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -135,7 +135,70 @@ INSERT INTO `activity_logs` (`id`, `admin_id`, `action`, `created_at`) VALUES
 (94, 4, 'Updated System Settings (Maintenance: OFF)', '2026-05-08 23:54:09'),
 (95, 3, 'Logged into the system via 2FA', '2026-05-11 03:27:48'),
 (96, 3, 'Updated System Settings (Maintenance: OFF)', '2026-05-11 03:36:16'),
-(97, 3, 'Updated System Settings (Maintenance: OFF)', '2026-05-11 03:57:53');
+(97, 3, 'Updated System Settings (Maintenance: OFF)', '2026-05-11 03:57:53'),
+(98, 3, 'Logged into the system via 2FA', '2026-05-14 00:47:02'),
+(99, 3, 'Updated System Settings (Maintenance: OFF)', '2026-05-14 08:44:52'),
+(100, 4, 'Logged into the system', '2026-05-14 15:51:12'),
+(101, 4, 'Edited student profile: Cabanlit, Anika Jasmine', '2026-05-14 15:51:51'),
+(102, 4, 'Added new Section: TCM - 4R1', '2026-05-14 16:46:58'),
+(103, 4, 'Uploaded photo for Student: Cabalde, Christian Carl C.', '2026-05-14 16:47:52'),
+(104, 4, 'Added new Section: ECE - 4R1', '2026-05-14 16:49:22'),
+(105, 4, 'Uploaded photo for Student: Jandayan, John Claude E.', '2026-05-14 16:51:25'),
+(106, 4, 'Added new Section: Archi - 4R1', '2026-05-14 16:51:45'),
+(107, 4, 'Uploaded photo for Student: Galindo, Justin Vince L.', '2026-05-14 16:53:16'),
+(108, 4, 'Added new Section: EE - 4R1', '2026-05-14 16:54:55'),
+(109, 4, 'Uploaded photo for Student: Cañizares, Carl Michael S.', '2026-05-14 16:55:33'),
+(110, 4, 'Added new Section: ABE - 4R1', '2026-05-14 16:57:24'),
+(111, 4, 'Uploaded photo for Student: Caboverde, Chanice', '2026-05-14 16:58:41'),
+(112, 4, 'Added new Section: EnE - 4R1', '2026-05-14 16:59:25'),
+(113, 4, 'Uploaded photo for Student: Flores, Zyra Nadine A.', '2026-05-14 17:01:13'),
+(114, 4, 'Added new Section: GE - 4R1', '2026-05-14 17:01:32'),
+(115, 4, 'Uploaded photo for Student: Fugnit, Remiel Charles', '2026-05-14 17:02:27'),
+(116, 4, 'Added new Section: IT - 4R2', '2026-05-14 17:03:46'),
+(117, 4, 'Uploaded photo for Student: Durain, Jussy Jay G.', '2026-05-14 17:04:31'),
+(118, 4, 'Added new Section: ME - 4R1', '2026-05-14 17:05:10'),
+(119, 4, 'Added new Section: NAME - 4R1', '2026-05-14 17:24:46'),
+(120, 4, 'Uploaded photo for Student: Ondoy, Noel C. Jr.', '2026-05-14 17:25:39'),
+(121, 4, 'Added new Section: Agri - 4R1', '2026-05-14 17:25:50'),
+(122, 4, 'Added new Section: AF - 4R1', '2026-05-14 17:26:09'),
+(123, 4, 'Added new Section: HM - 4R1', '2026-05-14 17:26:19'),
+(124, 4, 'Added new Section: MarBio - 4R1', '2026-05-14 17:26:57'),
+(125, 4, 'Added new Section: AM - 4R1', '2026-05-14 17:27:12'),
+(126, 4, 'Added new Section: AP - 4R1', '2026-05-14 17:27:23'),
+(127, 4, 'Added new Section: Chem - 4R1', '2026-05-14 17:27:35'),
+(128, 4, 'Added new Section: ES - 4R1', '2026-05-14 17:27:52'),
+(129, 4, 'Added new Section: SW - 4R1', '2026-05-14 17:28:09'),
+(130, 4, 'Added new Section: Auto - 4R1', '2026-05-15 15:40:31'),
+(131, 4, 'Uploaded photo for Student: Montes, Nasc Benedict', '2026-05-15 15:42:00'),
+(132, 4, 'Added new Section: EM - 4R1', '2026-05-15 15:42:14'),
+(133, 4, 'Uploaded photo for Student: Macahilos, Mark Jerald D.', '2026-05-15 15:43:11'),
+(134, 4, 'Added new Section: EST - 4R1', '2026-05-15 15:43:26'),
+(135, 4, 'Uploaded photo for Student: Navarro, Jhon Llyod M.', '2026-05-15 15:44:29'),
+(136, 4, 'Added new Section: ESM - 4R1', '2026-05-15 15:44:43'),
+(137, 4, 'Uploaded photo for Student: Awiten, Chosen Grace', '2026-05-15 15:45:48'),
+(138, 4, 'Added new Section: MET - 4R1', '2026-05-15 15:45:59'),
+(139, 4, 'Uploaded photo for Student: Domaog, Maira Lorraine', '2026-05-15 15:47:09'),
+(140, 4, 'Uploaded photo for Student: Espragera, Allyza Jane D.', '2026-05-15 15:48:13'),
+(141, 4, 'Added new Section: SEM - 4R1', '2026-05-15 15:50:58'),
+(142, 4, 'Uploaded photo for Student: Clerigo, Erich B.', '2026-05-15 15:52:10'),
+(143, 4, 'Added new Section: SES - 4R1', '2026-05-15 15:52:24'),
+(144, 4, 'Uploaded photo for Student: Cailing, Jon Mc Rogel IV', '2026-05-15 15:53:15'),
+(145, 4, 'Uploaded photo for Student: Tabaniag, J-vhonne L.', '2026-05-15 15:58:25'),
+(146, 4, 'Uploaded photo for Student: Alegre, Dyjei Queen C.', '2026-05-15 16:03:43'),
+(147, 4, 'Uploaded photo for Student: Fuestes, King Jethro', '2026-05-15 16:19:28'),
+(148, 4, 'Uploaded photo for Student: Justiniani, Jonathan', '2026-05-15 16:23:48'),
+(149, 4, 'Added new Section: TLE - 4R1', '2026-05-15 16:30:35'),
+(150, 4, 'Uploaded photo for Student: Tuba, Shane Abby', '2026-05-15 16:31:25'),
+(151, 4, 'Added new Section: IT - 4R3', '2026-05-15 16:59:17'),
+(152, 4, 'Added new Section: IT - 4R4', '2026-05-15 16:59:31'),
+(153, 4, 'Added new Section: IT - 4R5', '2026-05-15 16:59:41'),
+(154, 4, 'Added new Section: IT - 4R6', '2026-05-15 16:59:54'),
+(155, 4, 'Added new Section: IT - 4R7', '2026-05-15 17:00:10'),
+(156, 4, 'Added new Section: IT - 4R8', '2026-05-15 17:00:22'),
+(157, 4, 'Added new Section: IT - 4R9', '2026-05-15 17:03:45'),
+(158, 4, 'Added new Section: IT - 4R10', '2026-05-15 17:04:04'),
+(159, 4, 'Added new Section: IT - 4R11', '2026-05-15 17:04:17'),
+(160, 4, 'Logged into the system', '2026-05-16 03:16:02');
 
 -- --------------------------------------------------------
 
@@ -183,10 +246,10 @@ CREATE TABLE `community_comments` (
 --
 
 INSERT INTO `community_comments` (`id`, `post_id`, `user_id`, `body`, `created_at`, `parent_id`) VALUES
-(1, 1, 2, 'let goo pooo', '2026-05-11 21:24:44', NULL),
 (2, 1, 2, 'hello i know him po', '2026-05-11 22:10:25', NULL),
 (3, 1, 7, 'i know him po', '2026-05-11 22:12:17', NULL),
-(4, 1, 7, 'can you tell where he is now?', '2026-05-11 22:21:15', 2);
+(4, 1, 7, 'can you tell where he is now?', '2026-05-11 22:21:15', 2),
+(5, 1, 2, 'yes po', '2026-05-13 14:24:49', 4);
 
 -- --------------------------------------------------------
 
@@ -208,7 +271,8 @@ CREATE TABLE `community_posts` (
 
 INSERT INTO `community_posts` (`id`, `user_id`, `title`, `body`, `created_at`) VALUES
 (1, 2, 'Hello everyone!!!!', 'I\'m looking for jussycutie', '2026-05-11 21:16:35'),
-(2, 7, 'Looking for Ram', 'Hello, Naa pay naka ilang ram? mingaw na kayo ko niya fuck u niya', '2026-05-11 21:27:01');
+(3, 2, 'HEllOOOOO', 'can we normalized aHHEAHEAHHDSADSADA', '2026-05-13 14:30:12'),
+(4, 7, 'ALUMNI PARTY', 'HEllO batch 2029 party tayo', '2026-05-14 09:15:27');
 
 -- --------------------------------------------------------
 
@@ -234,6 +298,28 @@ INSERT INTO `departments` (`id`, `name`, `abbreviation`) VALUES
 (5, 'Natural Sciences', 'CNS'),
 (6, 'Social Sciences', 'CSS'),
 (7, 'Art and Humanities', 'CAH');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_likes`
+--
+
+CREATE TABLE `post_likes` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `post_likes`
+--
+
+INSERT INTO `post_likes` (`id`, `post_id`, `user_id`, `created_at`) VALUES
+(2, 3, 2, '2026-05-13 16:31:58'),
+(6, 3, 7, '2026-05-15 04:37:02'),
+(7, 4, 7, '2026-05-15 04:37:13');
 
 -- --------------------------------------------------------
 
@@ -310,7 +396,43 @@ INSERT INTO `sections` (`id`, `program_id`, `name`) VALUES
 (3, 1, 'CE - 4R1'),
 (4, 11, 'DS - 4R1'),
 (5, 5, 'CpE - 4R1'),
-(6, 10, 'CS - 4R2');
+(6, 10, 'CS - 4R2'),
+(7, 12, 'TCM - 4R1'),
+(8, 2, 'ECE - 4R1'),
+(9, 34, 'Archi - 4R1'),
+(10, 3, 'EE - 4R1'),
+(11, 6, 'ABE - 4R1'),
+(12, 4, 'EnE - 4R1'),
+(13, 9, 'GE - 4R1'),
+(14, 13, 'IT - 4R2'),
+(15, 7, 'ME - 4R1'),
+(16, 8, 'NAME - 4R1'),
+(17, 21, 'Agri - 4R1'),
+(18, 22, 'AF - 4R1'),
+(19, 23, 'HM - 4R1'),
+(20, 24, 'MarBio - 4R1'),
+(21, 25, 'AM - 4R1'),
+(22, 26, 'AP - 4R1'),
+(23, 27, 'Chem - 4R1'),
+(24, 28, 'ES - 4R1'),
+(25, 31, 'SW - 4R1'),
+(26, 15, 'Auto - 4R1'),
+(27, 16, 'EM - 4R1'),
+(28, 17, 'EST - 4R1'),
+(29, 18, 'ESM - 4R1'),
+(30, 20, 'MET - 4R1'),
+(31, 29, 'SEM - 4R1'),
+(32, 30, 'SES - 4R1'),
+(33, 33, 'TLE - 4R1'),
+(34, 13, 'IT - 4R3'),
+(35, 13, 'IT - 4R4'),
+(36, 13, 'IT - 4R5'),
+(37, 13, 'IT - 4R6'),
+(38, 13, 'IT - 4R7'),
+(39, 13, 'IT - 4R8'),
+(40, 13, 'IT - 4R9'),
+(41, 13, 'IT - 4R10'),
+(42, 13, 'IT - 4R11');
 
 -- --------------------------------------------------------
 
@@ -342,8 +464,30 @@ INSERT INTO `student_profiles` (`id`, `user_id`, `full_name`, `department_id`, `
 (15, NULL, 'Tangarorang, Maui Alenxander', 2, 13, 1, 'Cum Laude', '2029', 'I love my wifi', 'assets/img/student/student_69d516202295c4.60509213.jpg', 1, 10, '2026-04-07 14:35:12'),
 (16, NULL, 'Pabia, Jared', 1, 1, 3, 'Summa Cum Laude', '2029', 'AYOOOOO', 'assets/img/student/student_69d516ca27e1f9.09941308.jpg', 1, 10, '2026-04-07 14:38:02'),
 (18, NULL, 'Caroro, Andrei', 1, 5, 5, 'Cum Laude', '2029', 'I love latinas', 'assets/img/student/student_69d5a6b2c198c3.25979147.jpg', 1, 10, '2026-04-08 00:52:02'),
-(19, NULL, 'Cabanlit, Anika Jasmine', 2, 10, 6, 'None', '2029', 'hahahahahahaha', 'assets/img/student/student_69d9e9c2d6d186.41129793.jpg', 1, 3, '2026-04-21 04:32:08'),
-(20, NULL, 'Lapinid, Abigail', 2, 13, 1, 'Cum Laude', '2030', 'Thank you for working hard', 'assets/img/student/student_69e7082f2bb591.61135886.jpg', 1, 3, '2026-04-21 05:16:31');
+(19, NULL, 'Cabanlit, Anika Jasmine', 2, 10, 6, 'Summa Cum Laude', '2029', 'hahahahahahaha', 'assets/img/student/student_69d9e9c2d6d186.41129793.jpg', 1, 3, '2026-05-14 15:51:51'),
+(20, NULL, 'Lapinid, Abigail', 2, 13, 1, 'Cum Laude', '2030', 'Thank you for working hard', 'assets/img/student/student_69e7082f2bb591.61135886.jpg', 1, 3, '2026-04-21 05:16:31'),
+(21, NULL, 'Cabalde, Christian Carl C.', 2, 12, 7, 'Magna Cum Laude', '2030', 'I love cats', 'assets/img/student/student_6a05fcb87b2252.37216675.jpg', 1, 4, '2026-05-14 16:47:52'),
+(22, NULL, 'Jandayan, John Claude E.', 1, 2, 8, 'Summa Cum Laude', '2028', 'Basketball mo na bago druga', 'assets/img/student/student_6a05fd8ddfe577.82041772.jpg', 1, 4, '2026-05-14 16:51:25'),
+(23, NULL, 'Galindo, Justin Vince L.', 7, 34, 9, 'Magna Cum Laude', '2028', 'Shabukoy noon, basketball player na ngayon', 'assets/img/student/student_6a05fdfc501399.07641710.jpg', 1, 4, '2026-05-14 16:53:16'),
+(24, NULL, 'Cañizares, Carl Michael S.', 1, 3, 10, 'Summa Cum Laude', '2031', 'Work Hard', 'assets/img/student/student_6a05fe8582dd86.89938860.jpg', 1, 4, '2026-05-14 16:55:33'),
+(25, NULL, 'Caboverde, Chanice', 1, 6, 11, 'Magna Cum Laude', '2033', 'pa pos4 nga po', 'assets/img/student/student_6a05ff418e23f5.72434965.jpg', 1, 4, '2026-05-14 16:58:41'),
+(26, NULL, 'Flores, Zyra Nadine A.', 1, 4, 12, 'Magna Cum Laude', '2032', 'rolobox nga po', 'assets/img/student/student_6a05ffd93a7bb9.47286359.jpeg', 1, 4, '2026-05-14 17:01:13'),
+(27, NULL, 'Fugnit, Remiel Charles', 1, 9, 13, 'Summa Cum Laude', '2034', 'ulol ka ba?', 'assets/img/student/student_6a0600237927f1.07382132.jpg', 1, 4, '2026-05-14 17:02:27'),
+(28, NULL, 'Durain, Jussy Jay G.', 2, 13, 14, 'Magna Cum Laude', '2028', 'Work Hard, Play Hard', 'assets/img/student/student_6a06009f448911.77675027.jpg', 1, 4, '2026-05-14 17:04:31'),
+(29, NULL, 'Ondoy, Noel C. Jr.', 1, 8, 16, 'Magna Cum Laude', '2035', 'Gamerrrr', 'assets/img/student/student_6a06059342c338.87776515.jpg', 1, 4, '2026-05-14 17:25:39'),
+(30, NULL, 'Montes, Nasc Benedict', 3, 15, 26, 'Cum Laude', '2036', 'Soon to be pro player', 'assets/img/student/student_6a073ec874b2a8.45236253.jpeg', 1, 4, '2026-05-15 15:42:00'),
+(31, NULL, 'Macahilos, Mark Jerald D.', 3, 16, 27, 'Summa Cum Laude', '2036', 'Dota player', 'assets/img/student/student_6a073f0f553c84.87148986.jpg', 1, 4, '2026-05-15 15:43:11'),
+(32, NULL, 'Navarro, Jhon Llyod M.', 3, 17, 28, 'Magna Cum Laude', '2034', 'Code lang ng code', 'assets/img/student/student_6a073f5d8eb6a2.12111416.jpg', 1, 4, '2026-05-15 15:44:29'),
+(33, NULL, 'Awiten, Chosen Grace', 3, 18, 29, 'Magna Cum Laude', '2031', 'Ice cream is life', 'assets/img/student/student_6a073facc927d2.58051349.jpg', 1, 4, '2026-05-15 15:45:48'),
+(34, NULL, 'Domaog, Maira Lorraine', 3, 20, 30, 'Cum Laude', '2032', 'Hello World', 'assets/img/student/student_6a073ffdadcb79.67381538.jpg', 1, 4, '2026-05-15 15:47:09'),
+(35, NULL, 'Espragera, Allyza Jane D.', 4, 24, 20, 'Cum Laude', '2030', 'Rage baiter', 'assets/img/student/student_6a07403d5d71a3.96427609.jpg', 1, 4, '2026-05-15 15:48:13'),
+(36, NULL, 'Clerigo, Erich B.', 6, 29, 31, 'Cum Laude', '2033', 'idk', 'assets/img/student/student_6a07412a749cc7.12354519.jpeg', 1, 4, '2026-05-15 15:52:10'),
+(37, NULL, 'Cailing, Jon Mc Rogel IV', 6, 30, 32, 'Cum Laude', '2033', 'yo chill', 'assets/img/student/student_6a07416bc880e7.25148095.jpg', 1, 4, '2026-05-15 15:53:15'),
+(38, NULL, 'Tabaniag, J-vhonne L.', 2, 10, 6, 'Magna Cum Laude', '2029', 'Matcha da best', 'assets/img/student/student_6a0742a11895b3.44855120.jpeg', 1, 4, '2026-05-15 15:58:25'),
+(39, NULL, 'Alegre, Dyjei Queen C.', 2, 11, 4, 'Summa Cum Laude', '2029', 'Science', 'assets/img/student/student_6a0743df2de7d9.72887119.jpg', 1, 4, '2026-05-15 16:03:43'),
+(40, NULL, 'Fuestes, King Jethro', 2, 13, 1, 'Magna Cum Laude', '2029', 'Bola muna bago druga', 'assets/img/student/student_6a0747906f9351.98641412.jpg', 1, 4, '2026-05-15 16:19:28'),
+(41, NULL, 'Justiniani, Jonathan', 2, 13, 1, 'Magna Cum Laude', '2029', 'Lebron Fan since 2012', 'assets/img/student/student_6a074894bf6ef4.63851082.jpg', 1, 4, '2026-05-15 16:23:48'),
+(42, NULL, 'Tuba, Shane Abby', 6, 33, 33, 'Magna Cum Laude', '2029', 'Study Hard.', 'assets/img/student/student_6a074a5d5d2784.35736687.png', 1, 4, '2026-05-15 16:31:25');
 
 -- --------------------------------------------------------
 
@@ -362,13 +506,13 @@ CREATE TABLE `system_settings` (
 --
 
 INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`) VALUES
-(1, 'system_name', 'E-Yearbook'),
+(1, 'system_name', 'E-Gallery'),
 (2, 'default_class_year', '2029'),
 (3, 'maintenance_mode', '0'),
-(16, 'system_name', 'E-Yearbook'),
+(16, 'system_name', 'E-Gallery'),
 (17, 'default_class_year', '2031'),
 (18, 'maintenance_mode', '0'),
-(19, 'system_name', 'E-Yearbook'),
+(19, 'system_name', 'E-Gallery'),
 (20, 'maintenance_mode', '0'),
 (21, 'school_logo', 'user/assets/Img/Logo/custom_logo_1778281346.webp'),
 (22, 'school_logo', 'user/assets/Img/Logo/custom_logo_1778281346.webp'),
@@ -500,7 +644,27 @@ INSERT INTO `user_visits` (`id`, `user_id`, `visit_time`) VALUES
 (71, 7, '2026-05-11 21:25:44'),
 (72, 2, '2026-05-11 21:37:20'),
 (73, 7, '2026-05-11 22:12:00'),
-(74, 12, '2026-05-11 22:25:15');
+(74, 12, '2026-05-11 22:25:15'),
+(75, 2, '2026-05-13 14:17:05'),
+(76, 2, '2026-05-13 14:53:10'),
+(77, 7, '2026-05-13 16:32:20'),
+(78, 2, '2026-05-14 01:58:09'),
+(79, 2, '2026-05-14 02:16:38'),
+(80, 7, '2026-05-14 08:45:13'),
+(81, 2, '2026-05-14 09:15:38'),
+(82, 2, '2026-05-14 09:56:14'),
+(83, 2, '2026-05-14 10:34:29'),
+(84, 2, '2026-05-14 15:50:49'),
+(85, 7, '2026-05-14 16:48:11'),
+(86, 7, '2026-05-14 23:04:34'),
+(87, 7, '2026-05-15 04:36:42'),
+(88, 2, '2026-05-15 15:48:25'),
+(89, 2, '2026-05-15 16:26:25'),
+(90, 2, '2026-05-15 17:02:02'),
+(91, 2, '2026-05-15 17:29:35'),
+(92, 7, '2026-05-16 03:16:16'),
+(93, 7, '2026-05-16 03:31:47'),
+(94, 2, '2026-05-16 13:23:23');
 
 --
 -- Indexes for dumped tables
@@ -539,6 +703,14 @@ ALTER TABLE `community_posts`
 --
 ALTER TABLE `departments`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_like` (`post_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `programs`
@@ -592,7 +764,7 @@ ALTER TABLE `user_visits`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT for table `class_years`
@@ -604,19 +776,25 @@ ALTER TABLE `class_years`
 -- AUTO_INCREMENT for table `community_comments`
 --
 ALTER TABLE `community_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `community_posts`
 --
 ALTER TABLE `community_posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `post_likes`
+--
+ALTER TABLE `post_likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `programs`
@@ -628,13 +806,13 @@ ALTER TABLE `programs`
 -- AUTO_INCREMENT for table `sections`
 --
 ALTER TABLE `sections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `student_profiles`
 --
 ALTER TABLE `student_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `system_settings`
@@ -652,7 +830,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_visits`
 --
 ALTER TABLE `user_visits`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- Constraints for dumped tables
@@ -676,6 +854,13 @@ ALTER TABLE `community_comments`
 --
 ALTER TABLE `community_posts`
   ADD CONSTRAINT `community_posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD CONSTRAINT `post_likes_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `programs`
